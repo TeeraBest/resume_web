@@ -1,0 +1,117 @@
+version: "3.9"
+
+networks:
+  resume-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  valkey-data:
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: resume-postgres
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-resume_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-resume_pass}
+      - POSTGRES_DB=${POSTGRES_DB:-resume_db}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - resume-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-resume_user} -d ${POSTGRES_DB:-resume_db}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  valkey:
+    image: valkey/valkey:7.2-alpine
+    container_name: resume-valkey
+    expose:
+      - "6379"
+    volumes:
+      - valkey-data:/data
+    networks:
+      - resume-network
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: resume-backend
+    expose:
+      - "3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=${DATABASE_URL}
+      - VALKEY_HOST=valkey
+      - VALKEY_PORT=${VALKEY_PORT:-6379}
+      - CACHE_TTL=${CACHE_TTL:-300}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+    networks:
+      - resume-network
+    restart: unless-stopped
+
+  kong:
+    image: kong:3.6-ubuntu
+    container_name: resume-kong
+    ports:
+      - "8000:8000"
+    environment:
+      - KONG_DATABASE=off
+      - KONG_DECLARATIVE_CONFIG=/kong/declarative/kong.yml
+      - KONG_PROXY_LISTEN=0.0.0.0:8000
+      - KONG_LOG_LEVEL=warn
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+    volumes:
+      - ./kong/kong.yml:/kong/declarative/kong.yml:ro
+    depends_on:
+      - backend
+    networks:
+      - resume-network
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000/api/v1}
+    container_name: resume-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      kong:
+        condition: service_healthy
+    networks:
+      - resume-network
+    restart: unless-stopped

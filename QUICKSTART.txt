@@ -1,0 +1,59 @@
+════════════════════════════════════════════════════════════════
+  Resume Web — Full-Stack POC
+════════════════════════════════════════════════════════════════
+
+✓ All files created and fixed
+✓ Ready to run
+
+REQUIREMENTS: Docker Desktop (and it must be running)
+
+════════════════════════════════════════════════════════════════
+  ONE COMMAND TO START:
+════════════════════════════════════════════════════════════════
+
+  docker compose up --build
+
+════════════════════════════════════════════════════════════════
+  AFTER IT STARTS (2-3 minutes, watch the logs):
+════════════════════════════════════════════════════════════════
+
+  ✓ PostgreSQL ready
+  ✓ Valkey ready
+  ✓ Backend running migrations + seeding
+  ✓ Kong proxying
+  ✓ Frontend serving
+
+Then open:
+
+  🌐 Frontend:     http://localhost:5173
+  🔀 API Gateway:  http://localhost:8000/api/v1/resume
+  📊 Kong Admin:   http://localhost:8001
+
+════════════════════════════════════════════════════════════════
+  DOCUMENTATION:
+════════════════════════════════════════════════════════════════
+
+  👀 What was fixed?     → read FIXES.md
+  📖 Setup guide:        → read SETUP.md
+  📚 Full README:        → read README.md
+  🏗️  Architecture:       → read docs/architecture.md
+  🔌 API spec:           → read docs/api-spec.md
+  📊 Sequence flows:     → read docs/sequence-diagrams.md
+  💾 Tech choices:       → read docs/tech-stack.md
+
+════════════════════════════════════════════════════════════════
+  STOP EVERYTHING:
+════════════════════════════════════════════════════════════════
+
+  Ctrl+C to stop containers
+
+  docker compose down          (stop)
+  docker compose down -v       (stop + delete data)
+
+════════════════════════════════════════════════════════════════
+
+Ready? Run this in the 06-resume-web directory:
+
+    docker compose up --build
+
+════════════════════════════════════════════════════════════════

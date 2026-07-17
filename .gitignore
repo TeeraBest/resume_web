@@ -1,0 +1,20 @@
+# POC Projects
+.DS_Store
+node_modules/
+.env
+*.log
+bin/
+obj/
+.vs/
+.idea/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+DerivedData/
+build/
+.gradle/
+local.properties
+*.apk
+*.ipa
+dist/
+coverage/
+tmp/

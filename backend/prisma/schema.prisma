@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id           String          @id @default(uuid())
+  fullName     String          @map("full_name")
+  title        String
+  summary      String
+  email        String          @unique
+  phone        String?
+  location     String?
+  linkedin     String?
+  github       String?
+  website      String?
+  resumeUrl    String?         @map("resume_url")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  experiences    Experience[]
+  education      Education[]
+  skills         Skill[]
+  projects       Project[]
+  certifications Certification[]
+  articles       Article[]
+
+  @@map("profiles")
+}
+
+model Experience {
+  id          String              @id @default(uuid())
+  profileId   String              @map("profile_id")
+  company     String
+  position    String
+  location    String?
+  startDate   DateTime            @map("start_date") @db.Date
+  endDate     DateTime?           @map("end_date") @db.Date
+  isCurrent   Boolean             @default(false) @map("is_current")
+  description String
+  order       Int                 @default(0)
+  createdAt   DateTime            @default(now()) @map("created_at")
+
+  profile     Profile             @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  highlights  ExperienceHighlight[]
+
+  @@index([profileId])
+  @@map("experiences")
+}
+
+model ExperienceHighlight {
+  id           String     @id @default(uuid())
+  experienceId String     @map("experience_id")
+  description  String
+  order        Int        @default(0)
+
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  @@index([experienceId])
+  @@map("experience_highlights")
+}
+
+model Education {
+  id          String    @id @default(uuid())
+  profileId   String    @map("profile_id")
+  institution String
+  degree      String
+  field       String
+  startDate   DateTime  @map("start_date") @db.Date
+  endDate     DateTime? @map("end_date") @db.Date
+  gpa         String?
+  description String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("education")
+}
+
+model Skill {
+  id        String   @id @default(uuid())
+  profileId String   @map("profile_id")
+  name      String
+  level     SkillLevel
+  category  String
+  order     Int      @default(0)
+  yearsOfExperience Float?   @map("years_of_experience")
+  projectsCount     Int?     @map("projects_count")
+  description       String?
+
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("skills")
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+model Project {
+  id          String            @id @default(uuid())
+  profileId   String            @map("profile_id")
+  name        String
+  description String
+  startDate   DateTime?         @map("start_date") @db.Date
+  endDate     DateTime?         @map("end_date") @db.Date
+  url         String?
+  githubUrl   String?           @map("github_url")
+  order       Int               @default(0)
+  createdAt   DateTime          @default(now()) @map("created_at")
+
+  profile      Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  technologies ProjectTechnology[]
+  architecture ProjectArchitectureNode[]
+
+  @@index([profileId])
+  @@map("projects")
+}
+
+model ProjectTechnology {
+  id         String  @id @default(uuid())
+  projectId  String  @map("project_id")
+  technology String
+  order      Int     @default(0)
+
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("project_technologies")
+}
+
+model Certification {
+  id           String    @id @default(uuid())
+  profileId    String    @map("profile_id")
+  name         String
+  issuer       String
+  issueDate    DateTime  @map("issue_date") @db.Date
+  expiryDate   DateTime? @map("expiry_date") @db.Date
+  credentialId String?   @map("credential_id")
+  url          String?
+  order        Int       @default(0)
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  profile      Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("certifications")
+}
+
+model ProjectArchitectureNode {
+  id               String   @id @default(uuid())
+  projectId        String   @map("project_id")
+  name             String
+  nodeType         String   @map("node_type")
+  order            Int      @default(0)
+  responsibilities String[] @default([])
+  challenges       String[] @default([])
+  solutions        String[] @default([])
+  technologies     String[] @default([])
+
+  project          Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("project_architecture_nodes")
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  profileId   String   @map("profile_id")
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String
+  coverImage  String?  @map("cover_image")
+  tags        String[] @default([])
+  publishedAt DateTime @map("published_at") @db.Date
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("articles")
+}
