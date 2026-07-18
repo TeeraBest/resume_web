@@ -56,6 +56,33 @@ cp .env.example .env
 - Local: `.env` files (gitignored)
 - Production: Docker secrets or cloud provider secret manager
 
+## Cloud Deployment
+
+### Docker Compose Cloud Manifest
+The repository includes `docker-compose.cloud.yml` for a cloud host deployment using published images.
+
+Use this file on a remote server with Docker Compose v2:
+```bash
+export DATABASE_URL=postgresql://resume_user:resume_pass@postgres:5432/resume_db
+export VITE_API_BASE_URL=https://your-api.example.com/api/v1
+export GITHUB_REPOSITORY_OWNER=your-github-user-or-org
+docker compose -f docker-compose.cloud.yml up -d
+```
+
+### GitHub Actions Remote Deploy
+The workflow `.github/workflows/deploy-cloud.yml` builds and pushes both service images and runs `docker compose pull && docker compose up -d` on the remote host.
+
+Required secrets:
+- `DOCKER_HOST_REGISTRY` (e.g. `ghcr.io` or private registry host)
+- `DOCKER_HOST_USERNAME`
+- `DOCKER_HOST_PASSWORD`
+- `DEPLOY_SSH_USER`
+- `DEPLOY_SSH_HOST`
+- `DEPLOY_REMOTE_PATH`
+- `FRONTEND_API_BASE_URL`
+
+If using GHCR for the images, set `DOCKER_HOST_REGISTRY=ghcr.io` and the host config should pull from the same registry.
+
 ## Health Checks
 
 All services expose:
