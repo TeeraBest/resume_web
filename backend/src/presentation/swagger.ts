@@ -32,7 +32,6 @@ export const swaggerUiConfig: FastifySwaggerUiOptions = {
   },
   staticCSP: true,
   transformStaticCSP: (header: string) => header,
-  exposeRoute: true,
 }
 
 const successResponseMeta = {
