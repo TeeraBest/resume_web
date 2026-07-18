@@ -18,7 +18,9 @@ export const swaggerConfig = {
   },
 }
 
-export const swaggerUiConfig = {
+import type { FastifySwaggerUiOptions } from '@fastify/swagger-ui'
+
+export const swaggerUiConfig: FastifySwaggerUiOptions = {
   routePrefix: '/docs',
   uiConfig: {
     docExpansion: 'list',
@@ -30,7 +32,6 @@ export const swaggerUiConfig = {
   },
   staticCSP: true,
   transformStaticCSP: (header: string) => header,
-  exposeRoute: true,
 }
 
 const successResponseMeta = {

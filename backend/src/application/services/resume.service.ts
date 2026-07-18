@@ -1,12 +1,14 @@
-import type { IResumeRepository } from '../repositories/IResumeRepository'
+import type { IResumeRepository } from '../../domain/repositories/IResumeRepository'
 import type {
   ProfileEntity,
   ExperienceEntity,
   EducationEntity,
   SkillCategoryEntity,
   ProjectEntity,
-  CertificationEntity,  ArticleEntity,  FullResumeEntity,
-} from '../entities/resume.entity'
+  CertificationEntity,
+  ArticleEntity,
+  FullResumeEntity,
+} from '../../domain/entities/resume.entity'
 
 export class ResumeService {
   constructor(private readonly repository: IResumeRepository) {}
