@@ -12,7 +12,7 @@ EXPOSE 3001
 CMD ["sh", "./entrypoint.sh"]
 
 FROM base AS builder
-RUN npm install
+RUN npm ci
 COPY . .
 RUN npx prisma generate && npm run build
 

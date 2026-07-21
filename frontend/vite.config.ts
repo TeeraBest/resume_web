@@ -4,6 +4,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  base: '/resume_web/',
   resolve: {
     alias: {
       '@core': resolve(__dirname, 'src/core'),
