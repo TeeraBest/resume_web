@@ -1,20 +1,39 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { GetResumeMockUseCase } from '@domain/usecases/getResumeMock.usecase'
-import type { Experience, SkillCategory } from '@core/models/resume.model'
+import { GetResumeUseCase } from '@domain/usecases/getResume.usecase'
+import { ResumeRepository } from '@data/repositories/resume.repository'
+import type { Experience, FullResume, SkillCategory } from '@core/models/resume.model'
 
-// const repository = new ResumeRepository()
-// const getResumeUseCase = new GetResumeUseCase(repository)
-const getResumeUseCase = new GetResumeMockUseCase()
+const repository = new ResumeRepository()
+const getResumeUseCase = new GetResumeUseCase(repository)
+const getResumeMockUseCase = new GetResumeMockUseCase()
 
 export const RESUME_QUERY_KEY = ['resume', 'full'] as const
+
+async function fetchResumeWithFallback(): Promise<FullResume> {
+  const maxAttempts = 3
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await getResumeUseCase.execute()
+    } catch {
+      if (attempt === maxAttempts) {
+        return getResumeMockUseCase.execute()
+      }
+    }
+  }
+
+  return getResumeMockUseCase.execute()
+}
 
 export function useResumeViewModel() {
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: RESUME_QUERY_KEY,
-    queryFn: () => getResumeUseCase.execute(),
-    staleTime: 5 * 60 * 1000,  // 5 min — mirrors server-side TTL
-    retry: 2,
+    queryFn: fetchResumeWithFallback,
+    initialData: getResumeMockUseCase.execute(),
+    staleTime: 5 * 60 * 1000,
+    retry: false,
   })
 
   const sortedExperiences = useMemo<Experience[]>(() => {
