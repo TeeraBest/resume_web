@@ -7,7 +7,7 @@ import { MOCK_RESUME } from '@presentation/modern/data/mockResume'
  * Swap back to GetResumeUseCase when the real API is available.
  */
 export class GetResumeMockUseCase {
-  async execute(): Promise<FullResume> {
+  execute(): FullResume {
     return MOCK_RESUME
   }
 }
