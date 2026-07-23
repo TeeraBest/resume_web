@@ -188,7 +188,215 @@ export const MOCK_RESUME: FullResume = {
     ],
   },
 
-  projects: [],
+  projects: [
+    {
+      id: 'proj-app2app-authen',
+      name: 'App2AppAuthen',
+      description:
+        'Secure app-to-app authentication flow for Bangkok Bank that improved login security and kept the handoff experience smooth across mobile banking journeys.',
+      startDate: '2024-01-01',
+      endDate: '2024-12-31',
+      technologies: ['SwiftUI', 'Jetpack Compose', 'Deep Linking', 'Go', 'C#', 'Azure DevOps'],
+      links: { url: null, github: null },
+      architecture: [
+        {
+          id: 'arch-app2app-mobile',
+          name: 'Mobile Auth Flow',
+          nodeType: 'frontend',
+          order: 0,
+          responsibilities: [
+            'Render authentication screens and approval states in iOS and Android',
+            'Handle cross-app redirect and return flow with deep links',
+          ],
+          challenges: [
+            'Keep auth handoff clear when control moves between two apps',
+            'Avoid broken state when users cancel or background the flow',
+          ],
+          solutions: [
+            'Built a mock testing app to verify every auth path',
+            'Used deep-link routing with explicit success, cancel, and retry states',
+          ],
+          technologies: ['SwiftUI', 'Jetpack Compose', 'Deep Linking'],
+        },
+        {
+          id: 'arch-app2app-api',
+          name: 'Backend API',
+          nodeType: 'backend',
+          order: 1,
+          responsibilities: [
+            'Validate auth requests and issue response payloads for the mobile clients',
+            'Support secure handoff between source app and banking app',
+          ],
+          challenges: [
+            'Coordinate payload compatibility across two mobile apps',
+            'Keep the contract stable while mobile UX kept evolving',
+          ],
+          solutions: [
+            'Defined clear request and response DTOs for each auth step',
+            'Added server-side validation to reject malformed or stale requests',
+          ],
+          technologies: ['Go', 'C#', 'RESTful API'],
+        },
+        {
+          id: 'arch-app2app-sec',
+          name: 'Security Layer',
+          nodeType: 'security',
+          order: 2,
+          responsibilities: [
+            'Protect user authentication during app handoff',
+            'Reduce login friction without weakening security controls',
+          ],
+          challenges: [
+            'Balance stronger security with seamless user experience',
+            'Prevent spoofed redirects or invalid callbacks',
+          ],
+          solutions: [
+            'Used signed handoff data and strict redirect validation',
+            'Kept auth state short-lived and verified on every callback',
+          ],
+          technologies: ['Secure Deep Links', 'Authentication'],
+        },
+      ],
+    },
+    {
+      id: 'proj-rate-alert',
+      name: 'Currency Rate Alert',
+      description:
+        'Real-time exchange rate alert feature on iOS and Android that let users define thresholds and receive push notifications when rates crossed the target value.',
+      startDate: '2024-01-01',
+      endDate: '2024-12-31',
+      technologies: ['SwiftUI', 'Jetpack Compose', 'Go', 'C#', 'Push Notifications', 'Azure DevOps'],
+      links: { url: null, github: null },
+      architecture: [
+        {
+          id: 'arch-rate-mobile',
+          name: 'Mobile UI',
+          nodeType: 'frontend',
+          order: 0,
+          responsibilities: [
+            'Let users set target exchange rates and notification preferences',
+            'Present live rate updates and alert history clearly',
+          ],
+          challenges: [
+            'Make rate configuration simple on small screens',
+            'Keep UI responsive while rates update in real time',
+          ],
+          solutions: [
+            'Designed focused forms for buy and sell alert setup',
+            'Used lightweight state updates for live rate refreshes',
+          ],
+          technologies: ['SwiftUI', 'Jetpack Compose'],
+        },
+        {
+          id: 'arch-rate-api',
+          name: 'Alert Service',
+          nodeType: 'backend',
+          order: 1,
+          responsibilities: [
+            'Evaluate user thresholds against current exchange rates',
+            'Trigger notification events when a rule matches',
+          ],
+          challenges: [
+            'Avoid duplicate alerts when the same threshold is crossed repeatedly',
+            'Keep polling and notification timing predictable',
+          ],
+          solutions: [
+            'Added rule evaluation and alert state tracking on the server',
+            'Integrated push notification delivery after threshold match',
+          ],
+          technologies: ['Go', 'C#', 'RESTful API'],
+        },
+        {
+          id: 'arch-rate-notify',
+          name: 'Notification Layer',
+          nodeType: 'notification',
+          order: 2,
+          responsibilities: [
+            'Deliver push notifications when alerts fire',
+            'Keep alert history visible in the app',
+          ],
+          challenges: [
+            'Make sure notification delivery stays aligned with user preferences',
+            'Handle alerts that arrive while the app is backgrounded',
+          ],
+          solutions: [
+            'Used server-side push notification integration',
+            'Kept history synchronized so users could audit alert events',
+          ],
+          technologies: ['Push Notifications', 'Mobile'],
+        },
+      ],
+    },
+    {
+      id: 'proj-digital-wallet',
+      name: 'Digital Wallet',
+      description:
+        'Compliant digital wallet solution for a national government payment initiative, delivered on both iOS and Android with mobile UI, payment APIs, and regulatory constraints in mind.',
+      startDate: '2023-01-01',
+      endDate: '2024-12-31',
+      technologies: ['SwiftUI', 'Jetpack Compose', 'Go', 'C#', 'Payment APIs', 'Compliance'],
+      links: { url: null, github: null },
+      architecture: [
+        {
+          id: 'arch-wallet-ui',
+          name: 'Wallet UI',
+          nodeType: 'frontend',
+          order: 0,
+          responsibilities: [
+            'Show wallet balances, payment status, and transaction screens',
+            'Support a clear UX for government-backed payment flows',
+          ],
+          challenges: [
+            'Keep the wallet flow understandable for broad user groups',
+            'Handle payment states cleanly when transactions are pending or failed',
+          ],
+          solutions: [
+            'Built native interfaces in SwiftUI and Jetpack Compose',
+            'Focused on strong visual hierarchy for balances and payment confirmation',
+          ],
+          technologies: ['SwiftUI', 'Jetpack Compose'],
+        },
+        {
+          id: 'arch-wallet-api',
+          name: 'Payment API',
+          nodeType: 'backend',
+          order: 1,
+          responsibilities: [
+            'Process wallet transactions and retrieve payment status',
+            'Expose reliable APIs for mobile payment flows',
+          ],
+          challenges: [
+            'Keep mobile and backend contracts stable during policy changes',
+            'Ensure payment results are accurate and traceable',
+          ],
+          solutions: [
+            'Integrated mobile clients with server-side payment APIs',
+            'Kept the flow auditable for compliance and support',
+          ],
+          technologies: ['Go', 'C#', 'RESTful API'],
+        },
+        {
+          id: 'arch-wallet-compliance',
+          name: 'Compliance Layer',
+          nodeType: 'security',
+          order: 2,
+          responsibilities: [
+            'Keep the wallet solution aligned with regulatory requirements',
+            'Support safe rollout for a national payment initiative',
+          ],
+          challenges: [
+            'Balance usability with strict compliance needs',
+            'Avoid inconsistencies across devices and app versions',
+          ],
+          solutions: [
+            'Validated flows against business and regulatory constraints',
+            'Coordinated release readiness with internal stakeholders',
+          ],
+          technologies: ['Compliance', 'Mobile Payments'],
+        },
+      ],
+    },
+  ],
 
   certifications: [],
 
