@@ -1,4 +1,5 @@
 import { AnimatePresence } from 'framer-motion'
+import { useEffect } from 'react'
 import type { Article, Experience, Profile, Project, Skill } from '@core/models/resume.model'
 import { useNarrativeStore } from '../state/narrativeStore'
 import { HomeOverlay } from './HomeOverlay'
@@ -25,6 +26,28 @@ export function StageOverlay({ profile, experiences, projects, skills, articles 
   const activeProjectId = useNarrativeStore((s) => s.activeProjectId)
   const activeSkillId = useNarrativeStore((s) => s.activeSkillId)
   const activeArticleSlug = useNarrativeStore((s) => s.activeArticleSlug)
+
+  useEffect(() => {
+    if (detail !== 'projectDetail' && detail !== 'skillDetail') return
+
+    const { body, documentElement } = document
+    const previousBodyOverflow = body.style.overflow
+    const previousHtmlOverflow = documentElement.style.overflow
+    const previousBodyOverscroll = body.style.overscrollBehavior
+    const previousHtmlOverscroll = documentElement.style.overscrollBehavior
+
+    body.style.overflow = 'hidden'
+    documentElement.style.overflow = 'hidden'
+    body.style.overscrollBehavior = 'none'
+    documentElement.style.overscrollBehavior = 'none'
+
+    return () => {
+      body.style.overflow = previousBodyOverflow
+      documentElement.style.overflow = previousHtmlOverflow
+      body.style.overscrollBehavior = previousBodyOverscroll
+      documentElement.style.overscrollBehavior = previousHtmlOverscroll
+    }
+  }, [detail])
 
   return (
     <div className="pointer-events-none fixed inset-0 z-10 flex items-center justify-center">

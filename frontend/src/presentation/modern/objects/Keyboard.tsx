@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 import type { Group, Mesh } from 'three'
 import type { Skill } from '@core/models/resume.model'
@@ -16,6 +17,7 @@ const COLS = 5
 export function Keyboard({ position, skills }: KeyboardProps) {
   const groupRef = useRef<Group>(null)
   useIdleFloat(groupRef, { speed: 0.32, amplitude: 0.15, phase: 0.6 })
+  const activeSkillId = useNarrativeStore((s) => s.activeSkillId)
 
   const limited = useMemo(() => skills.slice(0, 20), [skills])
 
@@ -31,7 +33,20 @@ export function Keyboard({ position, skills }: KeyboardProps) {
         const row = Math.floor(i / COLS)
         const x = (col - (COLS - 1) / 2) * 1.4
         const z = (row - 1.5) * 0.62
-        return <KeyCap key={skill.id} skill={skill} index={i} position={[x, 0.2, z]} />
+        const isActive = skill.id === activeSkillId
+
+        return (
+          <>
+            <KeyCap key={skill.id} skill={skill} index={i} position={[x, 0.2, z]} />
+            {isActive && (
+              <Html key={`${skill.id}-label`} position={[x, 0.62, z]} center transform distanceFactor={10}>
+                <div className="pointer-events-none rounded-full border border-cyan-300/30 bg-slate-950/85 px-3 py-1 text-[10px] font-semibold tracking-wide text-cyan-100 shadow-[0_0_18px_rgba(79,214,255,0.35)]">
+                  {skill.name}
+                </div>
+              </Html>
+            )}
+          </>
+        )
       })}
     </group>
   )
