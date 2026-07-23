@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useResumeViewModel } from '@presentation/viewmodels/useResumeViewModel'
 import { ProfileSection } from '@presentation/components/resume/ProfileSection'
 import { ExperienceSection } from '@presentation/components/resume/ExperienceSection'
@@ -10,6 +11,10 @@ import { ErrorMessage } from '@presentation/components/shared/ErrorMessage'
 
 export function ResumePage() {
   const vm = useResumeViewModel()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [])
 
   if (vm.isLoading) return <LoadingSpinner />
 

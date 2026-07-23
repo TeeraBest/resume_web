@@ -16,7 +16,7 @@ export function ProjectDetailOverlay({ project }: { project: Project | undefined
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="pointer-events-auto flex w-full max-w-5xl items-start gap-8 px-6"
+      className="pointer-events-auto flex max-h-[80vh] w-full max-w-5xl items-start gap-8 overflow-y-auto px-6 pr-2"
     >
       <div className="flex-1">
         <button onClick={closeDetail} className="mb-4 text-xs text-white/50 hover:text-white/80">
