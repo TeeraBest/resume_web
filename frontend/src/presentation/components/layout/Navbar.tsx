@@ -20,7 +20,7 @@ export function Navbar() {
             to="/resume"
             className={`transition-colors ${pathname === '/resume' ? 'text-brand-600' : 'text-gray-500 hover:text-gray-900'}`}
           >
-            Resume
+            Résumé
           </Link>
         </div>
       </div>
