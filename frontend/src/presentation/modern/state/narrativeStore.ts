@@ -12,10 +12,15 @@ export const STAGES = [
   'enterLaptop',
   'home',
   'experience',
+  'post-experience',
   'projects',
+  'post-projects',
   'skills',
+  'post-skills',
   'blog',
+  'post-blog',
   'contact',
+  'post-contact',
   'ending',
 ] as const
 
