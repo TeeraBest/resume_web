@@ -6,7 +6,7 @@ export function IntroHint() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1, delay: 1.2 }}
+      transition={{ duration: 1, delay: 0.1 }}
       className="pointer-events-none absolute inset-x-0 bottom-10 flex flex-col items-center gap-2"
     >
       <span className="text-xs uppercase tracking-[0.3em] text-white/40">Scroll to begin</span>

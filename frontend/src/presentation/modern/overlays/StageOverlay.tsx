@@ -26,6 +26,8 @@ export function StageOverlay({ profile, experiences, projects, skills, articles 
   const activeProjectId = useNarrativeStore((s) => s.activeProjectId)
   const activeSkillId = useNarrativeStore((s) => s.activeSkillId)
   const activeArticleSlug = useNarrativeStore((s) => s.activeArticleSlug)
+  const isPostStage = stage.startsWith('post-')
+  const showHomeOverlay = !isPostStage && (stage === 'laptopOpen' || stage === 'enterLaptop')
 
   useEffect(() => {
     if (detail !== 'projectDetail' && detail !== 'skillDetail') return
@@ -62,13 +64,13 @@ export function StageOverlay({ profile, experiences, projects, skills, articles 
           <ArticleOverlay key="article" article={articles.find((a) => a.slug === activeArticleSlug)} />
         )}
 
-        {!detail && stage === 'intro' && <IntroHint key="intro-hint" />}
-        {!detail && stage === 'home' && <HomeOverlay key="home" profile={profile} />}
-        {!detail && stage === 'experience' && <ExperienceOverlay key="experience" experiences={experiences} />}
-        {!detail && stage === 'projects' && <ProjectsOverlay key="projects" projects={projects} />}
-        {!detail && stage === 'skills' && <SkillsHint key="skills-hint" />}
-        {!detail && stage === 'blog' && <BlogOverlay key="blog" articles={articles} />}
-        {!detail && stage === 'contact' && <ContactOverlay key="contact" profile={profile} />}
+        {!detail && !isPostStage && stage === 'intro' && <IntroHint key="intro-hint" />}
+        {!detail && showHomeOverlay && <HomeOverlay key="home" profile={profile} />}
+        {!detail && !isPostStage && stage === 'experience' && <ExperienceOverlay key="experience" experiences={experiences} />}
+        {!detail && !isPostStage && stage === 'projects' && <ProjectsOverlay key="projects" projects={projects} />}
+        {!detail && !isPostStage && stage === 'skills' && <SkillsHint key="skills-hint" />}
+        {!detail && !isPostStage && stage === 'blog' && <BlogOverlay key="blog" articles={articles} />}
+        {!detail && !isPostStage && stage === 'contact' && <ContactOverlay key="contact" profile={profile} />}
       </AnimatePresence>
     </div>
   )

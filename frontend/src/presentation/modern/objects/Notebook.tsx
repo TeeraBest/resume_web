@@ -22,7 +22,8 @@ export function Notebook({ position, openDuringStage, color = '#3a4250' }: Noteb
     const { progress } = useNarrativeStore.getState()
     const openAmount = afterStageProgress(progress, openDuringStage)
     if (coverRef.current) {
-      coverRef.current.rotation.x = THREE.MathUtils.lerp(0, -Math.PI * 0.92, openAmount)
+      coverRef.current.rotation.x = THREE.MathUtils.lerp(Math.PI,Math.PI * 0.07, openAmount)
+      // coverRef.current.rotation.z = THREE.MathUtils.lerp(-Math.PI,0, openAmount)
     }
   })
 
@@ -39,12 +40,18 @@ export function Notebook({ position, openDuringStage, color = '#3a4250' }: Noteb
         <meshStandardMaterial color={color} roughness={0.6} />
       </mesh>
       {/* Front cover, hinges open along the back edge */}
-      <group ref={coverRef} position={[0, 0.1, 1.7]}>
+      <group ref={coverRef} position={[0, 0.1, -1.7]}>
         <mesh position={[0, 0, -1.7]}>
           <boxGeometry args={[2.7, 0.1, 3.5]} />
           <meshStandardMaterial color={color} roughness={0.55} metalness={0.05} />
         </mesh>
       </group>
+      {/* <group ref={coverRef} position={[-1.7, 0.2, 0]} >
+        <mesh position={[-1.7, 0.1, 0]}>
+          <boxGeometry args={[2.7, 0.1, 3.5]} />
+          <meshStandardMaterial color={color}/>
+        </mesh>
+      </group> */}
     </group>
   )
 }

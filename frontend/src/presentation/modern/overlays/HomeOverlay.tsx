@@ -1,9 +1,7 @@
 import { motion } from 'framer-motion'
 import type { Profile } from '@core/models/resume.model'
-import { useScrollToStage } from '../hooks/useScrollToStage'
 
 export function HomeOverlay({ profile }: { profile: Profile | null }) {
-  const scrollToStage = useScrollToStage()
 
   return (
     <motion.div
@@ -19,24 +17,6 @@ export function HomeOverlay({ profile }: { profile: Profile | null }) {
       <p className="mt-6 text-sm leading-relaxed text-white/50">{profile?.summary}</p>
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <button
-          onClick={() => scrollToStage('projects')}
-          className="rounded-full bg-cyan-500/90 px-6 py-2.5 text-sm font-medium text-black transition hover:bg-cyan-400"
-        >
-          View Projects
-        </button>
-        <button
-          onClick={() => scrollToStage('experience')}
-          className="rounded-full border border-white/20 px-6 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/40"
-        >
-          Experience
-        </button>
-        <button
-          onClick={() => scrollToStage('contact')}
-          className="rounded-full border border-white/20 px-6 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/40"
-        >
-          Contact
-        </button>
       </div>
     </motion.div>
   )

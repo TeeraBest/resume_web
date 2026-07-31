@@ -13,7 +13,7 @@ interface LaptopProps {
   profileTitle: string
 }
 
-const CLOSED_ANGLE = -Math.PI / 2 // lid lying flat on the base
+const CLOSED_ANGLE = Math.PI / 2 // lid lying flat on the base
 const OPEN_ANGLE = -Math.PI * 0.12 // lid tilted back like a real laptop
 
 export function Laptop({ position, profileName, profileTitle }: LaptopProps) {

@@ -57,7 +57,7 @@ export function ContactOverlay({ profile }: { profile: Profile | null }) {
                 rel="noreferrer"
                 className="block w-full rounded-xl bg-cyan-500/90 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-cyan-400"
               >
-                Download Resume
+                Download Résumé
               </a>
             )}
           </motion.div>

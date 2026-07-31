@@ -20,7 +20,7 @@ export function HomePage() {
           to="/resume"
           className="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg hover:shadow-cyan-500/50"
         >
-          View Resume →
+          View Résumé →
         </Link>
         <p className="mt-8 text-xs text-gray-500">
           Data served via Kong Gateway · Cached with Valkey · Clean Architecture (MVVM)

@@ -82,11 +82,16 @@ export const CAMERA_KEYFRAMES: CameraKeyframe[] = [
   { stage: 'laptopOpen', position: [-4, 14, 40], lookAt: [-10, 6, 8], fov: 38 },
   { stage: 'enterLaptop', position: [-10, 9.5, 18], lookAt: [-10, 8.8, 8], fov: 34 },
   { stage: 'home', position: [-10, 9, 6], lookAt: [-10, 8.8, -20], fov: 50 },
-  { stage: 'experience', position: [22, 9, 14], lookAt: [17, 5, 2], fov: 40 },
+  { stage: 'experience', position: [22, 9, 14], lookAt: [17, 5, 2], fov: 60 },
+  { stage: 'post-experience', position: [22, 9, 14], lookAt: [17, 5, 2], fov: 60 },
   { stage: 'projects', position: [0, 11, -2], lookAt: [0, 8, -22], fov: 45 },
+  { stage: 'post-projects', position: [0, 11, -2], lookAt: [0, 8, -22], fov: 45 },
   { stage: 'skills', position: [-2, 10, 30], lookAt: [-2, 4.5, 16], fov: 38 },
+  { stage: 'post-skills', position: [-2, 10, 30], lookAt: [-2, 4.5, 16], fov: 38 },
   { stage: 'blog', position: [-25, 9, 14], lookAt: [-20, 5, 2], fov: 40 },
+  { stage: 'post-blog', position: [-25, 9, 14], lookAt: [-20, 5, 2], fov: 40 },
   { stage: 'contact', position: [7, 9, 30], lookAt: [3, 5, 20], fov: 38 },
+  { stage: 'post-contact', position: [7, 9, 30], lookAt: [3, 5, 20], fov: 38 },
   { stage: 'ending', position: [0, 28, 100], lookAt: [0, 5, 0], fov: 42 },
 ]
 
