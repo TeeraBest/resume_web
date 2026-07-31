@@ -10,58 +10,56 @@ import { ProgressNav } from './overlays/ProgressNav'
 import { useNarrativeStore, STAGES } from './state/narrativeStore'
 import { getStageForProgress } from './state/stageConfig'
 import { useMockResumeViewModel } from './data/useMockResumeViewModel'
-import { useResumeBackgroundTrack } from './hooks/useResumeBackgroundTrack'
+import { useYoutubeBackgroundTrack } from './hooks/useYoutubeBackgroundTrack.ts'
 
 const SCROLL_VH_PER_STAGE = 110
 
 export function ResumeModernPage() {
   const vm = useMockResumeViewModel()
   const scrollSpacerRef = useRef<HTMLDivElement>(null)
+  const scrollOffsetRef = useRef(0)
+  const maxScrollDistanceRef = useRef(0)
+  const touchStartYRef = useRef<number | null>(null)
+  const touchPrevYRef = useRef<number | null>(null)
   const navigate = useNavigate()
   const [showResumePaper, setShowResumePaper] = useState(false)
   const [showResumePaperDialog, setShowResumePaperDialog] = useState(false)
   const [resumePaperMessage, setResumePaperMessage] = useState('')
   const skills = vm.allSkills
   const [isTrackMuted, setIsTrackMuted] = useState(true)
-  const randomDateTimeSeed = useMemo(() => {
-    const now = Date.now()
-    const randomOffsetMs = Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 365)
-    return new Date(now - randomOffsetMs).toISOString()
-  }, [])
+  const youtubeMusicVideoId = import.meta.env.VITE_YOUTUBE_MUSIC_VIDEO_ID?.trim() || '8b3fqIBrNW0'
+  const youtubeStartPercent = useMemo(() => 0.02 + Math.random() * 0.78, [])
 
-  const musicSeed = useMemo(
-    () => JSON.stringify({
-      profile: vm.profile,
-      experiences: vm.experiences,
-      skills: vm.skills,
-      projects: vm.projects,
-      education: vm.education,
-      randomDateTime: randomDateTimeSeed,
-    }),
-    [randomDateTimeSeed, vm.education, vm.experiences, vm.profile, vm.projects, vm.skills],
-  )
-
-  useResumeBackgroundTrack(musicSeed, { enabled: true, muted: isTrackMuted })
+  // Local procedural track stays as fallback while YouTube player is wired in.
+  // useResumeBackgroundTrack(musicSeed, { enabled: true, muted: isTrackMuted })
+  useYoutubeBackgroundTrack({
+    enabled: Boolean(youtubeMusicVideoId),
+    muted: isTrackMuted,
+    videoId: youtubeMusicVideoId ?? '',
+    volume: 15,
+    startPercent: youtubeStartPercent,
+  })
+  
 
   const resumePaperMessages = [
     'I have the paper version as well. No worryyy',
-    'Paper version is here.',
-    'Love it right? , you can also see my details here too',
+    // 'Paper version is here.',
+    // 'Love it right? , you can also see my details here too',
   ]
 
   useEffect(() => {
     const showButtonTimer = window.setTimeout(() => {
       setShowResumePaper(true)
-    }, 10_000)
+    }, 1_000)
 
     const showDialogTimer = window.setTimeout(() => {
       setResumePaperMessage(resumePaperMessages[Math.floor(Math.random() * resumePaperMessages.length)])
       setShowResumePaperDialog(true)
-    }, 13_000)
+    }, 2_000)
 
     const hideDialogTimer = window.setTimeout(() => {
       setShowResumePaperDialog(false)
-    }, 18_000)
+    }, 10_000)
 
     return () => {
       window.clearTimeout(showButtonTimer)
@@ -71,9 +69,8 @@ export function ResumeModernPage() {
   }, [])
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
-      const progress = scrollHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollHeight)) : 0
+    const syncNarrativeProgress = (offset: number, maxScrollDistance: number) => {
+      const progress = maxScrollDistance > 0 ? Math.min(1, Math.max(0, offset / maxScrollDistance)) : 0
 
       const store = useNarrativeStore.getState()
       store.setProgress(progress)
@@ -83,10 +80,100 @@ export function ResumeModernPage() {
       if (progress > 0.001 && !store.hasStarted) store.markStarted()
     }
 
+    const handleScroll = () => {
+      const maxScrollDistance = maxScrollDistanceRef.current
+      const offset = maxScrollDistance > 0 ? Math.min(maxScrollDistance, Math.max(0, window.scrollY)) : 0
+      scrollOffsetRef.current = offset
+      syncNarrativeProgress(offset, maxScrollDistance)
+    }
+
+    const handleWheel = (event: WheelEvent) => {
+      const maxScrollDistance = maxScrollDistanceRef.current
+      if (maxScrollDistance <= 0) return
+
+      if (event.deltaY > 0) {
+        event.preventDefault()
+        const nextOffset = scrollOffsetRef.current + Math.max(7.5, Math.abs(event.deltaY) * 0.3)
+        scrollOffsetRef.current = nextOffset >= maxScrollDistance ? nextOffset % maxScrollDistance : nextOffset
+        window.scrollTo(0, scrollOffsetRef.current)
+      } 
+      // else if (event.deltaY < 0) {
+      //   event.preventDefault()
+      // }
+    }
+
+    const handleTouchStart = (event: TouchEvent) => {
+      const t = event.touches[0]
+      touchStartYRef.current = t?.clientY ?? null
+      touchPrevYRef.current = t?.clientY ?? null
+    }
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const maxScrollDistance = maxScrollDistanceRef.current
+      if (maxScrollDistance <= 0) return
+
+      const touch = event.touches[0]
+      if (!touch) return
+
+      const y = touch.clientY
+      const prev = touchPrevYRef.current ?? y
+      const delta = prev - y
+      touchPrevYRef.current = y
+
+      // delta > 0 means user moved finger up => advance forward
+      if (delta > 0) {
+        event.preventDefault()
+        const nextOffset = scrollOffsetRef.current + Math.max(7.5, Math.abs(delta) * 0.8)
+        scrollOffsetRef.current = nextOffset >= maxScrollDistance ? nextOffset % maxScrollDistance : nextOffset
+        window.scrollTo(0, scrollOffsetRef.current)
+      } else {
+        // Prevent backward scrolling on mobile as well
+        // event.preventDefault()
+      }
+    }
+
+    const handleTouchEnd = () => {
+      touchStartYRef.current = null
+      touchPrevYRef.current = null
+    }
+
+    const updateScrollBounds = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
+      maxScrollDistanceRef.current = Math.max(0, scrollHeight)
+      if (maxScrollDistanceRef.current <= 0) {
+        scrollOffsetRef.current = 0
+        syncNarrativeProgress(0, 0)
+        return
+      }
+
+      if (scrollOffsetRef.current > maxScrollDistanceRef.current) {
+        scrollOffsetRef.current = scrollOffsetRef.current % maxScrollDistanceRef.current
+      }
+
+      window.scrollTo(0, scrollOffsetRef.current)
+      syncNarrativeProgress(scrollOffsetRef.current, maxScrollDistanceRef.current)
+    }
+
+    const handleResize = () => {
+      updateScrollBounds()
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
+    window.addEventListener('wheel', handleWheel, { passive: true })
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchmove', handleTouchMove, { passive: true })
+    window.addEventListener('touchend', handleTouchEnd, { passive: true })
+    window.addEventListener('resize', handleResize)
+
+    updateScrollBounds()
+
     return () => {
       window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('touchend', handleTouchEnd)
+      window.removeEventListener('resize', handleResize)
     }
   }, [])
 
@@ -114,7 +201,7 @@ export function ResumeModernPage() {
               onClick={() => navigate('/resume')}
               className="pointer-events-auto rounded-full border border-cyan-300/35 bg-slate-950/92 px-4 py-2 text-sm font-semibold text-cyan-100 shadow-[0_0_28px_rgba(79,214,255,0.18)] backdrop-blur-md hover:border-cyan-200/55 hover:bg-slate-900"
             >
-              Resume Paper
+              Résumé Paper
             </motion.button>
 
             {showResumePaperDialog && (
@@ -126,7 +213,7 @@ export function ResumeModernPage() {
                 className="relative mt-1 max-w-[18rem] rounded-[2rem] border border-amber-300/70 bg-amber-50/95 px-5 py-4 text-left text-sm text-slate-900 shadow-[0_14px_34px_rgba(245,158,11,0.25)] backdrop-blur-md"
               >
                 <div className="absolute -top-2 right-7 h-4 w-4 rotate-45 border-l border-t border-amber-300/70 bg-amber-50/95" />
-                <p className="text-[10px] uppercase tracking-[0.34em] text-amber-700/90">Resume Paper</p>
+                <p className="text-[10px] uppercase tracking-[0.34em] text-amber-700/90">Résumé Paper</p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-slate-800">{resumePaperMessage}</p>
               </motion.div>
             )}
