@@ -259,6 +259,75 @@ export const MOCK_RESUME: FullResume = {
       ],
     },
     {
+      id: 'proj-trip-space',
+      name: 'Trip Space',
+      description:
+        'Trip expense management feature in Bangkok Bank mobile banking where I delivered the web experience inside native iOS and Android via WebView and a JavaScript-to-native bridge for device capabilities and app-level interactions.',
+      startDate: '2024-01-01',
+      endDate: '2024-12-31',
+      technologies: ['JavaScript', 'WebView', 'SwiftUI', 'Jetpack Compose', 'Deep Linking', 'RESTful API'],
+      links: { url: null, github: null },
+      architecture: [
+        {
+          id: 'arch-trip-web',
+          name: 'Web Trip Experience',
+          nodeType: 'frontend',
+          order: 0,
+          responsibilities: [
+            'Render Trip Space journey (My Trip and Group Trip) as a web module inside mobile banking',
+            'Support expense tracking, summary views, and split-expense interactions from the web layer',
+          ],
+          challenges: [
+            'Keep UI and behavior consistent when embedded in both iOS and Android containers',
+            'Maintain smooth navigation and state when users move between native screens and web screens',
+          ],
+          solutions: [
+            'Built responsive web screens optimized for in-app WebView rendering',
+            'Defined clear route/state handling for entry, return, and refresh scenarios',
+          ],
+          technologies: ['JavaScript', 'WebView', 'Responsive Web'],
+        },
+        {
+          id: 'arch-trip-bridge',
+          name: 'JavaScript-Native Bridge',
+          nodeType: 'integration',
+          order: 1,
+          responsibilities: [
+            'Provide a message bridge so web pages can request native resources and native actions',
+            'Coordinate callback flows from native back to web for result handling',
+          ],
+          challenges: [
+            'Design a stable cross-platform bridge contract shared by web, iOS, and Android teams',
+            'Prevent race conditions and mismatched callback states across async operations',
+          ],
+          solutions: [
+            'Introduced command-based JavaScript bridge messages with typed payloads',
+            'Used correlation IDs and standardized success/failure callbacks for reliable web-native communication',
+          ],
+          technologies: ['JavaScript Bridge', 'SwiftUI', 'Jetpack Compose'],
+        },
+        {
+          id: 'arch-trip-services',
+          name: 'Data and Service Integration',
+          nodeType: 'backend',
+          order: 2,
+          responsibilities: [
+            'Integrate web trip flows with backend APIs for trip data, expenses, and summaries',
+            'Ensure mobile session context and web requests stay synchronized',
+          ],
+          challenges: [
+            'Keep API interactions resilient in mobile network conditions',
+            'Align release timing and API compatibility across multiple teams',
+          ],
+          solutions: [
+            'Implemented defensive request handling and user-friendly fallback states in web flows',
+            'Worked with platform teams on versioned contracts and rollout validation',
+          ],
+          technologies: ['RESTful API', 'Mobile Integration'],
+        },
+      ],
+    },
+    {
       id: 'proj-rate-alert',
       name: 'Currency Rate Alert',
       description:
@@ -400,5 +469,36 @@ export const MOCK_RESUME: FullResume = {
 
   certifications: [],
 
-  articles: [],
+  articles: [
+    {
+      id: 'article-github',
+      title: 'GitHub',
+      slug: 'github',
+      excerpt: 'Explore my code repositories and active projects on GitHub.',
+      content: 'GitHub: https://github.com/TeeraBest',
+      coverImage: null,
+      tags: ['github', 'code', 'portfolio'],
+      publishedAt: '2026-08-01',
+    },
+    {
+      id: 'article-linkedin',
+      title: 'LinkedIn',
+      slug: 'linkedin',
+      excerpt: 'View my professional background and career timeline on LinkedIn.',
+      content: 'LinkedIn: https://www.linkedin.com/in/teerapon-jeamphue-35749a135',
+      coverImage: null,
+      tags: ['linkedin', 'career', 'profile'],
+      publishedAt: '2026-08-01',
+    },
+    {
+      id: 'article-website',
+      title: 'Personal Website',
+      slug: 'personal-website',
+      excerpt: 'Visit my interactive resume website and project showcase.',
+      content: 'Website: https://teerabest.github.io/resume_web/',
+      coverImage: null,
+      tags: ['website', 'resume', 'showcase'],
+      publishedAt: '2026-08-01',
+    },
+  ],
 }
