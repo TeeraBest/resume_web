@@ -22,7 +22,10 @@ export function ResumeModernPage() {
   const maxScrollDistanceRef = useRef(0)
   const touchStartYRef = useRef<number | null>(null)
   const touchPrevYRef = useRef<number | null>(null)
+  const resumePaperHideTimerRef = useRef<number | null>(null)
+  const previousStageRef = useRef<string | null>(null)
   const navigate = useNavigate()
+  const stage = useNarrativeStore((s) => s.stage)
   const detail = useNarrativeStore((s) => s.detail)
   const [showResumePaper, setShowResumePaper] = useState(false)
   const [showResumePaperDialog, setShowResumePaperDialog] = useState(false)
@@ -81,8 +84,31 @@ export function ResumeModernPage() {
       window.clearTimeout(showButtonTimer)
       window.clearTimeout(showDialogTimer)
       window.clearTimeout(hideDialogTimer)
+
+      if (resumePaperHideTimerRef.current !== null) {
+        window.clearTimeout(resumePaperHideTimerRef.current)
+      }
     }
   }, [])
+
+  useEffect(() => {
+    const wasStage = previousStageRef.current
+    previousStageRef.current = stage
+
+    const enteredHintStage = (stage === 'intro' || stage === 'ending') && wasStage !== stage
+    if (!enteredHintStage) return
+
+    setResumePaperMessage(resumePaperMessages[Math.floor(Math.random() * resumePaperMessages.length)])
+    setShowResumePaperDialog(true)
+
+    if (resumePaperHideTimerRef.current !== null) {
+      window.clearTimeout(resumePaperHideTimerRef.current)
+    }
+
+    resumePaperHideTimerRef.current = window.setTimeout(() => {
+      setShowResumePaperDialog(false)
+    }, 10_000)
+  }, [stage, resumePaperMessages])
 
   useEffect(() => {
     const getNativeScrollContainer = (target: EventTarget | null) => {
