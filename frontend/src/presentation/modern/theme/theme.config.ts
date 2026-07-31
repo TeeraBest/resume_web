@@ -3,6 +3,7 @@ export const THEME_ATTRIBUTE = 'data-theme'
 export const THEMES = {
   MASTER: 'master',
   BEST_OFFICE: 'best-office',
+  MY_LOVE_ENG: 'MY_LOVE_ENG',
 } as const
 
 export type ThemeName = (typeof THEMES)[keyof typeof THEMES]
@@ -10,13 +11,30 @@ export type ThemeName = (typeof THEMES)[keyof typeof THEMES]
 // Single source of truth for the active site theme.
 export const ACTIVE_THEME: ThemeName = THEMES.BEST_OFFICE
 
+export function isThemeName(raw: string | null): raw is ThemeName {
+  return raw === THEMES.MASTER || raw === THEMES.BEST_OFFICE || raw === THEMES.MY_LOVE_ENG
+}
+
 export function applyTheme(theme: ThemeName): void {
   document.documentElement.setAttribute(THEME_ATTRIBUTE, theme)
 }
 
 export function getThemeFromDom(): ThemeName {
   const raw = document.documentElement.getAttribute(THEME_ATTRIBUTE)
-  return raw === THEMES.MASTER || raw === THEMES.BEST_OFFICE ? raw : ACTIVE_THEME
+  return isThemeName(raw) ? raw : ACTIVE_THEME
+}
+
+export function getThemeFromQuery(search: string): ThemeName | null {
+  const params = new URLSearchParams(search)
+  const raw = params.get('theme')
+  if (!raw) return null
+
+  const normalized = raw.trim().toLowerCase().replace(/[-\s]/g, '_')
+  if (normalized === THEMES.MASTER.toLowerCase()) return THEMES.MASTER
+  if (normalized === THEMES.BEST_OFFICE.toLowerCase().replace(/-/g, '_')) return THEMES.BEST_OFFICE
+  if (normalized === THEMES.MY_LOVE_ENG.toLowerCase()) return THEMES.MY_LOVE_ENG
+
+  return null
 }
 
 export interface SceneThemePalette {
@@ -44,6 +62,29 @@ export interface SceneThemePalette {
 }
 
 export const SCENE_THEME_PALETTES: Record<ThemeName, SceneThemePalette> = {
+  [THEMES.MY_LOVE_ENG]: {
+    gradientTop: '#ffe8f3',
+    gradientBottom: '#ffd7ec',
+    fog: '#ffd3e8',
+    hemisphereSky: '#fff4fa',
+    hemisphereGround: '#f7c9e4',
+    hemisphereIntensity: 1.55,
+    ambient: '#ffeefe',
+    ambientIntensity: 1.2,
+    directional: '#fff8fc',
+    directionalIntensity: 1.8,
+    pointBlue: '#ff9ac5',
+    pointBlueIntensity: 0.4,
+    pointWarm: '#ffb9d6',
+    pointWarmIntensity: 0.72,
+    particle: '#ff7db8',
+    particleOpacity: 0.28,
+    notebookExperience: '#e197be',
+    notebookBlog: '#d58ac9',
+    deskSurface: '#d8a2c6',
+    deskRim: '#ffd6eb',
+    deskRimEmissive: '#ff78b4',
+  },
   [THEMES.BEST_OFFICE]: {
     gradientTop: '#edf4ff',
     gradientBottom: '#dfe9f7',

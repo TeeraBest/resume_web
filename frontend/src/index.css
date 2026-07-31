@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -64,6 +64,36 @@
     --master-control-text: 30 41 59;
     --master-control-border: 71 85 105;
     --master-font: 'Inter', 'Segoe UI', sans-serif;
+  }
+
+  [data-theme='MY_LOVE_ENG'] {
+    --master-primary: 236 72 153;
+    --master-secondary: 255 240 248;
+    --master-accent: 219 39 119;
+    --master-success: 244 114 182;
+    --master-warning: 249 168 212;
+    --master-danger: 190 24 93;
+
+    --master-bg-dark: 255 233 246;
+    --master-bg-light: 255 245 251;
+
+    --master-text-dark: 76 5 46;
+    --master-text-on-dark: 92 24 56;
+    --master-text-on-dark-soft: 131 24 67;
+
+    --master-glass-border: 244 114 182;
+    --master-glass-bg: 255 255 255;
+    --master-glass-strong-bg: 255 252 255;
+    --master-glass-alpha: 0.76;
+    --master-glass-strong-alpha: 0.9;
+    --master-glass-border-alpha: 0.34;
+    --master-glass-strong-border-alpha: 0.42;
+    --master-input-bg: 255 250 253;
+    --master-control-surface: 255 245 251;
+    --master-control-surface-hover: 255 235 247;
+    --master-control-text: 131 24 67;
+    --master-control-border: 219 39 119;
+    --master-font: 'Nunito', 'Avenir Next', 'Segoe UI', sans-serif;
   }
 
   body {

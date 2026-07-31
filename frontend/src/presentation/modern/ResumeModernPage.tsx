@@ -11,6 +11,7 @@ import { useNarrativeStore, STAGES } from './state/narrativeStore'
 import { getStageForProgress } from './state/stageConfig'
 import { useMockResumeViewModel } from './data/useMockResumeViewModel'
 import { useYoutubeBackgroundTrack } from './hooks/useYoutubeBackgroundTrack.ts'
+import { getThemeFromDom, THEMES } from './theme/theme.config'
 
 const SCROLL_VH_PER_STAGE = 110
 
@@ -49,11 +50,14 @@ export function ResumeModernPage() {
   })
   
 
-  const resumePaperMessages = [
-    'I have the paper version as well. No worryyy',
-    // 'Paper version is here.',
-    // 'Love it right? , you can also see my details here too',
-  ]
+  const resumePaperMessages =
+    getThemeFromDom() === THEMES.MY_LOVE_ENG
+      ? ['I Love you so much. Please forgive me 🥰']
+      : [
+          'I have the paper version as well. No worryyy',
+          // 'Paper version is here.',
+          // 'Love it right? , you can also see my details here too',
+        ]
 
   useEffect(() => {
     const showButtonTimer = window.setTimeout(() => {

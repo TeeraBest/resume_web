@@ -2,9 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
-import { ACTIVE_THEME, applyTheme } from './presentation/modern/theme/theme.config'
+import { ACTIVE_THEME, applyTheme, getThemeFromQuery } from './presentation/modern/theme/theme.config'
 
-applyTheme(ACTIVE_THEME)
+applyTheme(getThemeFromQuery(window.location.search) ?? ACTIVE_THEME)
 
 // Suppress THREE.Clock deprecation emitted by @react-three/fiber internals.
 // Upstream fix: https://github.com/pmndrs/react-three-fiber/issues/3741
