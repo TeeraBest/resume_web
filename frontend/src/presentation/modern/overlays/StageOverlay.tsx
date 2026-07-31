@@ -64,7 +64,7 @@ export function StageOverlay({ profile, experiences, projects, skills, articles 
           <ArticleOverlay key="article" article={articles.find((a) => a.slug === activeArticleSlug)} />
         )}
 
-        {!detail && !isPostStage && stage === 'intro' && <IntroHint key="intro-hint" />}
+        {!detail && !isPostStage && (stage === 'intro' || stage === 'ending') && <IntroHint key="intro-hint" />}
         {!detail && showHomeOverlay && <HomeOverlay key="home" profile={profile} />}
         {!detail && !isPostStage && stage === 'experience' && <ExperienceOverlay key="experience" experiences={experiences} />}
         {!detail && !isPostStage && stage === 'projects' && <ProjectsOverlay key="projects" projects={projects} />}
