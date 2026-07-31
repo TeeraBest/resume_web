@@ -13,7 +13,9 @@ export function BlogOverlay({ articles }: { articles: Article[] }) {
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       className="pointer-events-auto w-full max-w-2xl px-6"
     >
-      <p className="mb-6 text-center text-xs uppercase tracking-[0.3em] text-cyan-300/70">Blog</p>
+      <h2 className="theme-kicker mb-6 text-center text-2xl font-extrabold uppercase tracking-[0.18em] md:text-3xl">
+        Blog
+      </h2>
       <div className="grid max-h-[60vh] gap-3 overflow-y-auto pr-1">
         {articles.map((article, i) => (
           <motion.button
@@ -22,16 +24,16 @@ export function BlogOverlay({ articles }: { articles: Article[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.5 }}
             onClick={() => openArticle(article.slug)}
-            className="rounded-2xl border border-white/10 bg-white/5 p-5 text-left backdrop-blur-md transition hover:border-white/25"
+            className="theme-glass rounded-2xl p-5 text-left transition hover:border-white/25"
           >
             <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-base font-semibold text-white">{article.title}</h3>
-              <span className="shrink-0 text-xs text-white/40">{article.publishedAt}</span>
+              <h3 className="theme-text-strong text-base font-semibold">{article.title}</h3>
+              <span className="theme-text-faint shrink-0 text-xs">{article.publishedAt}</span>
             </div>
-            <p className="mt-2 text-sm text-white/60">{article.excerpt}</p>
+            <p className="theme-text-muted mt-2 text-sm">{article.excerpt}</p>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {article.tags.map((t) => (
-                <span key={t} className="rounded-full bg-cyan-400/10 px-2.5 py-1 text-[11px] text-cyan-200/80">
+                <span key={t} className="theme-chip rounded-full px-2.5 py-1 text-[11px]">
                   #{t}
                 </span>
               ))}

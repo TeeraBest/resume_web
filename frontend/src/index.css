@@ -1,10 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root,
+  [data-theme='master'] {
+    --master-primary: 34 211 238;
+    --master-secondary: 15 23 42;
+    --master-accent: 245 158 11;
+    --master-success: 110 231 183;
+    --master-warning: 252 211 77;
+    --master-danger: 239 68 68;
+
+    --master-bg-dark: 2 4 10;
+    --master-bg-light: 249 250 251;
+
+    --master-text-dark: 17 24 39;
+    --master-text-on-dark: 255 255 255;
+    --master-text-on-dark-soft: 255 255 255;
+
+    --master-glass-border: 255 255 255;
+    --master-glass-bg: 255 255 255;
+    --master-glass-strong-bg: 0 0 0;
+    --master-glass-alpha: 0.05;
+    --master-glass-strong-alpha: 0.75;
+    --master-glass-border-alpha: 0.1;
+    --master-glass-strong-border-alpha: 0.15;
+    --master-input-bg: 0 0 0;
+    --master-control-surface: 15 23 42;
+    --master-control-surface-hover: 30 41 59;
+    --master-control-text: 255 255 255;
+    --master-control-border: 255 255 255;
+    --master-font: 'Space Grotesk', 'Avenir Next', 'Segoe UI', sans-serif;
+  }
+
+  [data-theme='best-office'] {
+    --master-primary: 37 99 235;
+    --master-secondary: 241 245 249;
+    --master-accent: 217 119 6;
+    --master-success: 22 163 74;
+    --master-warning: 245 158 11;
+    --master-danger: 220 38 38;
+
+    --master-bg-dark: 243 247 252;
+    --master-bg-light: 248 250 252;
+
+    --master-text-dark: 30 41 59;
+    --master-text-on-dark: 30 41 59;
+    --master-text-on-dark-soft: 51 65 85;
+
+    --master-glass-border: 148 163 184;
+    --master-glass-bg: 255 255 255;
+    --master-glass-strong-bg: 255 255 255;
+    --master-glass-alpha: 0.82;
+    --master-glass-strong-alpha: 0.92;
+    --master-glass-border-alpha: 0.32;
+    --master-glass-strong-border-alpha: 0.42;
+    --master-input-bg: 255 255 255;
+    --master-control-surface: 255 255 255;
+    --master-control-surface-hover: 241 245 249;
+    --master-control-text: 30 41 59;
+    --master-control-border: 71 85 105;
+    --master-font: 'Inter', 'Segoe UI', sans-serif;
+  }
+
   body {
     @apply text-gray-900 bg-gray-50 antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--master-font);
+  }
+}
+
+@layer components {
+  .theme-modern-bg {
+    background-color: rgb(var(--master-bg-dark));
+    color: rgb(var(--master-text-on-dark));
+  }
+
+  .theme-kicker {
+    color: rgb(var(--master-primary) / 0.75);
+  }
+
+  .theme-text-strong {
+    color: rgb(var(--master-text-on-dark));
+  }
+
+  .theme-text-muted {
+    color: rgb(var(--master-text-on-dark-soft) / 0.62);
+  }
+
+  .theme-text-faint {
+    color: rgb(var(--master-text-on-dark-soft) / 0.45);
+  }
+
+  .theme-glass {
+    border: 1px solid rgb(var(--master-glass-border) / var(--master-glass-border-alpha));
+    background-color: rgb(var(--master-glass-bg) / var(--master-glass-alpha));
+    backdrop-filter: blur(12px);
+  }
+
+  .theme-glass-strong {
+    border: 1px solid rgb(var(--master-glass-border) / var(--master-glass-strong-border-alpha));
+    background-color: rgb(var(--master-glass-strong-bg) / var(--master-glass-strong-alpha));
+    backdrop-filter: blur(12px);
+  }
+
+  .theme-control-shell {
+    border: 1px solid rgb(var(--master-control-border) / 0.4);
+    background-color: rgb(var(--master-control-surface) / 0.9);
+    color: rgb(var(--master-control-text));
+    box-shadow: 0 10px 28px rgb(15 23 42 / 0.15);
+  }
+
+  .theme-control-shell:hover {
+    border-color: rgb(var(--master-control-border) / 0.55);
+    background-color: rgb(var(--master-control-surface-hover) / 0.96);
+  }
+
+  .theme-control-icon {
+    background-color: rgb(var(--master-control-text) / 0.12);
+  }
+
+  .theme-control-text {
+    color: rgb(var(--master-control-text) / 0.78);
+  }
+
+  .theme-primary-pill {
+    border: 1px solid rgb(var(--master-primary) / 0.35);
+    background-color: rgb(var(--master-secondary) / 0.92);
+    color: rgb(var(--master-primary) / 0.95);
+    box-shadow: 0 0 28px rgb(var(--master-primary) / 0.18);
+  }
+
+  .theme-chip {
+    background-color: rgb(var(--master-primary) / 0.12);
+    color: rgb(var(--master-primary) / 0.9);
+  }
+
+  .theme-action {
+    background-color: rgb(var(--master-primary) / 0.92);
+    color: rgb(0 0 0 / 0.9);
+  }
+
+  .theme-action:hover {
+    background-color: rgb(var(--master-primary));
+  }
+
+  .theme-input {
+    border: 1px solid rgb(var(--master-glass-border) / 0.1);
+    background-color: rgb(var(--master-input-bg) / 0.82);
+    color: rgb(var(--master-text-on-dark));
+  }
+
+  .theme-input::placeholder {
+    color: rgb(var(--master-text-on-dark-soft) / 0.3);
+  }
+
+  .theme-input:focus {
+    border-color: rgb(var(--master-primary) / 0.62);
+    outline: none;
+  }
+
+  .theme-note {
+    border: 1px solid rgb(var(--master-accent) / 0.65);
+    background-color: rgb(255 251 235 / 0.95);
+    color: rgb(var(--master-text-dark));
+    box-shadow: 0 14px 34px rgb(var(--master-accent) / 0.25);
   }
 }

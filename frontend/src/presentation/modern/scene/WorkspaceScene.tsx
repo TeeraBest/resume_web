@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import type { Profile, Skill } from '@core/models/resume.model'
 import { CameraRig } from './CameraRig'
 import { ParticleField } from './ParticleField'
@@ -15,6 +15,7 @@ import { Phone } from '../objects/Phone'
 import { DeskLamp } from '../objects/DeskLamp'
 import { DeskAccessories } from '../objects/DeskAccessories'
 import { LAYOUT } from '../state/stageConfig'
+import { getThemeFromDom, SCENE_THEME_PALETTES, THEME_ATTRIBUTE } from '../theme/theme.config'
 
 interface WorkspaceSceneProps {
   profile: Profile | null
@@ -22,30 +23,49 @@ interface WorkspaceSceneProps {
 }
 
 export function WorkspaceScene({ profile, skills }: WorkspaceSceneProps) {
+  const [themeName, setThemeName] = useState(() => getThemeFromDom())
+
+  useEffect(() => {
+    const root = document.documentElement
+    const observer = new MutationObserver(() => {
+      setThemeName(getThemeFromDom())
+    })
+
+    observer.observe(root, { attributes: true, attributeFilter: [THEME_ATTRIBUTE] })
+    return () => observer.disconnect()
+  }, [])
+
+  const sceneColors = SCENE_THEME_PALETTES[themeName]
+
   return (
     <>
-      <GradientBackground />
-      <fog attach="fog" args={['#233052', 110, 300]} />
+      <GradientBackground topColor={sceneColors.gradientTop} bottomColor={sceneColors.gradientBottom} />
+      <fog attach="fog" args={[sceneColors.fog, 110, 300]} />
 
       <CameraRig />
 
-      <hemisphereLight args={['#a8cbff', '#2a3348', 1.3]} />
-      <ambientLight intensity={1.05} color="#b8d2ff" />
+      <hemisphereLight args={[sceneColors.hemisphereSky, sceneColors.hemisphereGround, sceneColors.hemisphereIntensity]} />
+      <ambientLight intensity={sceneColors.ambientIntensity} color={sceneColors.ambient} />
       <directionalLight
         position={[30, 50, 20]}
-        intensity={1.6}
-        color="#f2f6ff"
+        intensity={sceneColors.directionalIntensity}
+        color={sceneColors.directional}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <pointLight position={[-20, 20, 20]} intensity={1} color="#5a97ff" distance={90} />
-      <pointLight position={[15, 12, 25]} intensity={0.5} color="#ffe0b0" distance={70} />
+      <pointLight position={[-20, 20, 20]} intensity={sceneColors.pointBlueIntensity} color={sceneColors.pointBlue} distance={90} />
+      <pointLight position={[15, 12, 25]} intensity={sceneColors.pointWarmIntensity} color={sceneColors.pointWarm} distance={70} />
 
-      <ParticleField />
+      <ParticleField color={sceneColors.particle} opacity={sceneColors.particleOpacity} />
 
       <Suspense fallback={null}>
-        <Desk position={LAYOUT.desk.position}>
+        <Desk
+          position={LAYOUT.desk.position}
+          surfaceColor={sceneColors.deskSurface}
+          rimColor={sceneColors.deskRim}
+          rimEmissive={sceneColors.deskRimEmissive}
+        >
           <Laptop
             position={LAYOUT.laptop.position}
             profileName={profile?.fullName ?? ''}
@@ -55,8 +75,8 @@ export function WorkspaceScene({ profile, skills }: WorkspaceSceneProps) {
           <Keyboard position={LAYOUT.keyboard.position} skills={skills} />
           <Mouse position={LAYOUT.mouse.position} />
           <CoffeeCup position={LAYOUT.coffee.position} />
-          <Notebook position={LAYOUT.notebookExperience.position} openDuringStage="experience" color="#3a4250" />
-          <Notebook position={LAYOUT.notebookBlog.position} openDuringStage="blog" color="#4a3a50" />
+          <Notebook position={LAYOUT.notebookExperience.position} openDuringStage="experience" color={sceneColors.notebookExperience} />
+          <Notebook position={LAYOUT.notebookBlog.position} openDuringStage="blog" color={sceneColors.notebookBlog} />
           <Phone position={LAYOUT.phone.position} profile={profile} />
           <DeskLamp position={LAYOUT.lamp.position} />
           <DeskAccessories position={[19, 4.75, -4]} />

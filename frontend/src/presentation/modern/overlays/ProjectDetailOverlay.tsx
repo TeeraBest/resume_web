@@ -19,11 +19,11 @@ export function ProjectDetailOverlay({ project }: { project: Project | undefined
       className="pointer-events-auto flex max-h-[80vh] w-full max-w-5xl items-start gap-8 overflow-y-auto px-6 pr-2"
     >
       <div className="flex-1">
-        <button onClick={closeDetail} className="mb-4 text-xs text-white/50 hover:text-white/80">
+        <button onClick={closeDetail} className="theme-text-faint mb-4 text-xs hover:text-white/80">
           ← Back to projects
         </button>
-        <h2 className="text-2xl font-semibold text-white">{project.name}</h2>
-        <p className="mt-1 text-sm text-white/50">{project.description}</p>
+        <h2 className="theme-text-strong text-2xl font-semibold">{project.name}</h2>
+        <p className="theme-text-faint mt-1 text-sm">{project.description}</p>
 
         <div className="mt-8 flex flex-col items-stretch">
           {project.architecture
@@ -35,7 +35,7 @@ export function ProjectDetailOverlay({ project }: { project: Project | undefined
                   onClick={() => setSelectedId(node.id)}
                   className={`w-full rounded-xl border px-5 py-3 text-left transition ${
                     selected?.id === node.id
-                      ? 'border-cyan-400/60 bg-cyan-400/10 text-white'
+                      ? 'border-[rgb(var(--master-primary)/0.6)] bg-[rgb(var(--master-primary)/0.1)] text-white'
                       : 'border-white/10 bg-white/5 text-white/70 hover:border-white/25'
                   }`}
                 >
@@ -59,15 +59,15 @@ export function ProjectDetailOverlay({ project }: { project: Project | undefined
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.3 }}
-            className="w-80 shrink-0 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md"
+            className="theme-glass w-80 shrink-0 rounded-2xl p-5"
           >
-            <h3 className="text-base font-semibold text-white">{selected.name}</h3>
+            <h3 className="theme-text-strong text-base font-semibold">{selected.name}</h3>
             <DetailList title="Responsibilities" items={selected.responsibilities} />
             <DetailList title="Challenges" items={selected.challenges} />
             <DetailList title="Solutions" items={selected.solutions} />
             <div className="mt-3 flex flex-wrap gap-1.5">
               {selected.technologies.map((t) => (
-                <span key={t} className="rounded-full bg-cyan-400/10 px-2.5 py-1 text-[11px] text-cyan-200/80">
+                <span key={t} className="theme-chip rounded-full px-2.5 py-1 text-[11px]">
                   {t}
                 </span>
               ))}
@@ -85,8 +85,8 @@ export function ProjectDetailOverlay({ project }: { project: Project | undefined
           height: 6px;
           margin-left: -3px;
           border-radius: 9999px;
-          background: #4fd6ff;
-          box-shadow: 0 0 8px 2px rgba(79,214,255,0.8);
+          background: rgb(var(--master-primary));
+          box-shadow: 0 0 8px 2px rgb(var(--master-primary) / 0.8);
           animation: packet-flow 1.4s linear infinite;
         }
         @keyframes packet-flow {
@@ -104,11 +104,11 @@ function DetailList({ title, items }: { title: string; items: string[] }) {
   if (!items.length) return null
   return (
     <div className="mt-3">
-      <p className="text-[11px] uppercase tracking-wider text-white/40">{title}</p>
-      <ul className="mt-1.5 space-y-1 text-sm text-white/60">
+      <p className="theme-text-faint text-[11px] uppercase tracking-wider">{title}</p>
+      <ul className="theme-text-muted mt-1.5 space-y-1 text-sm">
         {items.map((item, idx) => (
           <li key={idx} className="flex gap-2">
-            <span className="text-cyan-400/70">•</span>
+            <span className="theme-kicker">•</span>
             <span>{item}</span>
           </li>
         ))}

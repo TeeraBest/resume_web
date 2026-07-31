@@ -189,7 +189,7 @@ export function ResumeModernPage() {
   }
 
   return (
-    <div className="relative bg-[#02040a]">
+    <div className="theme-modern-bg relative">
       <AnimatePresence>
         {showResumePaper && (
           <div className="pointer-events-none fixed right-5 top-5 z-30 flex flex-col items-end gap-2">
@@ -199,7 +199,7 @@ export function ResumeModernPage() {
               exit={{ opacity: 0, scale: 0.85, y: -6 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               onClick={() => navigate('/resume')}
-              className="pointer-events-auto rounded-full border border-cyan-300/35 bg-slate-950/92 px-4 py-2 text-sm font-semibold text-cyan-100 shadow-[0_0_28px_rgba(79,214,255,0.18)] backdrop-blur-md hover:border-cyan-200/55 hover:bg-slate-900"
+              className="theme-primary-pill pointer-events-auto rounded-full px-4 py-2 text-sm font-semibold transition hover:border-[rgb(var(--master-primary)/0.55)] hover:bg-[rgb(var(--master-secondary))]"
             >
               Résumé Paper
             </motion.button>
@@ -210,10 +210,10 @@ export function ResumeModernPage() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.94 }}
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                className="relative mt-1 max-w-[18rem] rounded-[2rem] border border-amber-300/70 bg-amber-50/95 px-5 py-4 text-left text-sm text-slate-900 shadow-[0_14px_34px_rgba(245,158,11,0.25)] backdrop-blur-md"
+                className="theme-note relative mt-1 max-w-[18rem] rounded-[2rem] px-5 py-4 text-left text-sm backdrop-blur-md"
               >
-                <div className="absolute -top-2 right-7 h-4 w-4 rotate-45 border-l border-t border-amber-300/70 bg-amber-50/95" />
-                <p className="text-[10px] uppercase tracking-[0.34em] text-amber-700/90">Résumé Paper</p>
+                <div className="absolute -top-2 right-7 h-4 w-4 rotate-45 border-l border-t border-[rgb(var(--master-accent)/0.65)] bg-[rgb(255_251_235/0.95)]" />
+                <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--master-accent)/0.92)]">Résumé Paper</p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-slate-800">{resumePaperMessage}</p>
               </motion.div>
             )}
@@ -225,12 +225,12 @@ export function ResumeModernPage() {
         onClick={() => setIsTrackMuted((value) => !value)}
         aria-label={isTrackMuted ? 'Turn on background music' : 'Turn off background music'}
         title={isTrackMuted ? 'Music off' : 'Music on'}
-        className="pointer-events-auto fixed bottom-5 left-5 z-30 flex items-center gap-3 rounded-full border border-white/15 bg-black/20 px-3 py-2 text-white/90 backdrop-blur-md transition hover:border-white/30 hover:bg-black/35"
+        className="theme-control-shell pointer-events-auto fixed left-5 top-5 z-30 flex items-center gap-0 rounded-full p-2 transition md:gap-3 md:px-3 md:py-2"
       >
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8">
+        <span className="theme-control-icon flex h-9 w-9 items-center justify-center rounded-full">
           {isTrackMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
         </span>
-        <span className="text-xs font-medium tracking-[0.18em] text-white/75">
+        <span className="theme-control-text hidden text-xs font-semibold tracking-[0.18em] md:inline">
           {isTrackMuted ? 'MUSIC OFF' : 'MUSIC ON'}
         </span>
       </button>

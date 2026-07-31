@@ -9,11 +9,11 @@ export function IntroHint() {
       transition={{ duration: 1, delay: 0.1 }}
       className="pointer-events-none absolute inset-x-0 bottom-10 flex flex-col items-center gap-2"
     >
-      <span className="text-xs uppercase tracking-[0.3em] text-white/40">Scroll to begin</span>
+      <span className="theme-text-faint text-xs uppercase tracking-[0.3em]">Scroll to begin</span>
       <motion.span
         animate={{ y: [0, 6, 0] }}
         transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-        className="text-white/40"
+        className="theme-text-faint"
       >
         ↓
       </motion.span>

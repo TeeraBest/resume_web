@@ -40,7 +40,7 @@ export function Keyboard({ position, skills }: KeyboardProps) {
             <KeyCap skill={skill} index={i} position={[x, 0.2, z]} />
             {isActive && (
               <Html position={[x, 0.62, z]} center transform distanceFactor={10}>
-                <div className="pointer-events-none rounded-full border border-cyan-300/30 bg-slate-950/85 px-3 py-1 text-[10px] font-semibold tracking-wide text-cyan-100 shadow-[0_0_18px_rgba(79,214,255,0.35)]">
+                <div className="theme-primary-pill pointer-events-none rounded-full px-3 py-1 text-[10px] font-semibold tracking-wide shadow-[0_0_18px_rgb(var(--master-primary)/0.35)]">
                   {skill.name}
                 </div>
               </Html>
