@@ -36,16 +36,16 @@ export function Keyboard({ position, skills }: KeyboardProps) {
         const isActive = skill.id === activeSkillId
 
         return (
-          <>
-            <KeyCap key={skill.id} skill={skill} index={i} position={[x, 0.2, z]} />
+          <group key={skill.id}>
+            <KeyCap skill={skill} index={i} position={[x, 0.2, z]} />
             {isActive && (
-              <Html key={`${skill.id}-label`} position={[x, 0.62, z]} center transform distanceFactor={10}>
+              <Html position={[x, 0.62, z]} center transform distanceFactor={10}>
                 <div className="pointer-events-none rounded-full border border-cyan-300/30 bg-slate-950/85 px-3 py-1 text-[10px] font-semibold tracking-wide text-cyan-100 shadow-[0_0_18px_rgba(79,214,255,0.35)]">
                   {skill.name}
                 </div>
               </Html>
             )}
-          </>
+          </group>
         )
       })}
     </group>
