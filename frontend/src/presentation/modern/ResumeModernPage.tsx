@@ -30,8 +30,12 @@ export function ResumeModernPage() {
   const skills = vm.allSkills
   const [isTrackMuted, setIsTrackMuted] = useState(true)
   const [hasActivatedMusic, setHasActivatedMusic] = useState(false)
-  const youtubeMusicVideoId = import.meta.env.VITE_YOUTUBE_MUSIC_VIDEO_ID?.trim() || '8b3fqIBrNW0'
-  const youtubeStartPercent = useMemo(() => 0.02 + Math.random() * 0.78, [])
+  const isLoveTheme = getThemeFromDom() === THEMES.MY_LOVE_ENG
+  const youtubeMusicVideoId =
+    isLoveTheme
+      ? 'kPhpHvnnn0Q'
+      : import.meta.env.VITE_YOUTUBE_MUSIC_VIDEO_ID?.trim() || '8b3fqIBrNW0'
+  const youtubeStartPercent = useMemo(() => (isLoveTheme ? 0 : 0.02 + Math.random() * 0.78), [isLoveTheme])
   const enableShadows = useMemo(() => {
     if (typeof window === 'undefined') return true
     const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
