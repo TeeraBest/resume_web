@@ -16,7 +16,7 @@ export function BlogOverlay({ articles }: { articles: Article[] }) {
       <h2 className="theme-kicker mb-6 text-center text-2xl font-extrabold uppercase tracking-[0.18em] md:text-3xl">
         Blog
       </h2>
-      <div className="grid max-h-[60vh] gap-3 overflow-y-auto pr-1">
+      <div data-native-scroll="true" className="grid max-h-[60vh] gap-3 overflow-y-auto overscroll-contain pr-1">
         {articles.map((article, i) => (
           <motion.button
             key={article.id}

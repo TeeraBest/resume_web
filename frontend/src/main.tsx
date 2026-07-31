@@ -6,6 +6,15 @@ import { ACTIVE_THEME, applyTheme } from './presentation/modern/theme/theme.conf
 
 applyTheme(ACTIVE_THEME)
 
+// Suppress THREE.Clock deprecation emitted by @react-three/fiber internals.
+// Upstream fix: https://github.com/pmndrs/react-three-fiber/issues/3741
+// Remove this block once @react-three/fiber v10 is adopted.
+const _warn = console.warn
+console.warn = (...args: unknown[]) => {
+  if (typeof args[0] === 'string' && args[0].includes('THREE.Clock')) return
+  _warn(...args)
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />

@@ -22,18 +22,26 @@ export function ResumeModernPage() {
   const touchStartYRef = useRef<number | null>(null)
   const touchPrevYRef = useRef<number | null>(null)
   const navigate = useNavigate()
+  const detail = useNarrativeStore((s) => s.detail)
   const [showResumePaper, setShowResumePaper] = useState(false)
   const [showResumePaperDialog, setShowResumePaperDialog] = useState(false)
   const [resumePaperMessage, setResumePaperMessage] = useState('')
   const skills = vm.allSkills
   const [isTrackMuted, setIsTrackMuted] = useState(true)
+  const [hasActivatedMusic, setHasActivatedMusic] = useState(false)
   const youtubeMusicVideoId = import.meta.env.VITE_YOUTUBE_MUSIC_VIDEO_ID?.trim() || '8b3fqIBrNW0'
   const youtubeStartPercent = useMemo(() => 0.02 + Math.random() * 0.78, [])
+  const enableShadows = useMemo(() => {
+    if (typeof window === 'undefined') return true
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+    const isSmallViewport = window.innerWidth < 900
+    return !(isCoarsePointer || isSmallViewport)
+  }, [])
 
   // Local procedural track stays as fallback while YouTube player is wired in.
   // useResumeBackgroundTrack(musicSeed, { enabled: true, muted: isTrackMuted })
   useYoutubeBackgroundTrack({
-    enabled: Boolean(youtubeMusicVideoId),
+    enabled: Boolean(youtubeMusicVideoId) && hasActivatedMusic,
     muted: isTrackMuted,
     videoId: youtubeMusicVideoId ?? '',
     volume: 15,
@@ -69,6 +77,25 @@ export function ResumeModernPage() {
   }, [])
 
   useEffect(() => {
+    const getNativeScrollContainer = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return null
+      return target.closest('[data-native-scroll="true"]') as HTMLElement | null
+    }
+
+    const canNativeScroll = (container: HTMLElement, delta: number) => {
+      if (delta === 0) return false
+
+      const maxScrollTop = container.scrollHeight - container.clientHeight
+      if (maxScrollTop <= 0) return false
+
+      const epsilon = 1
+      if (delta > 0) {
+        return container.scrollTop < maxScrollTop - epsilon
+      }
+
+      return container.scrollTop > epsilon
+    }
+
     const syncNarrativeProgress = (offset: number, maxScrollDistance: number) => {
       const progress = maxScrollDistance > 0 ? Math.min(1, Math.max(0, offset / maxScrollDistance)) : 0
 
@@ -88,6 +115,14 @@ export function ResumeModernPage() {
     }
 
     const handleWheel = (event: WheelEvent) => {
+      const nativeScrollContainer = getNativeScrollContainer(event.target)
+      if (nativeScrollContainer && canNativeScroll(nativeScrollContainer, event.deltaY)) return
+
+      if (detail === 'projectDetail') {
+        event.preventDefault()
+        return
+      }
+
       const maxScrollDistance = maxScrollDistanceRef.current
       if (maxScrollDistance <= 0) return
 
@@ -120,9 +155,17 @@ export function ResumeModernPage() {
       const delta = prev - y
       touchPrevYRef.current = y
 
+      const nativeScrollContainer = getNativeScrollContainer(event.target)
+      if (nativeScrollContainer && canNativeScroll(nativeScrollContainer, delta)) return
+
+      if (detail === 'projectDetail') {
+        if (event.cancelable) event.preventDefault()
+        return
+      }
+
       // delta > 0 means user moved finger up => advance forward
       if (delta > 0) {
-        event.preventDefault()
+        if (event.cancelable) event.preventDefault()
         const nextOffset = scrollOffsetRef.current + Math.max(7.5, Math.abs(delta) * 0.8)
         scrollOffsetRef.current = nextOffset >= maxScrollDistance ? nextOffset % maxScrollDistance : nextOffset
         window.scrollTo(0, scrollOffsetRef.current)
@@ -159,9 +202,9 @@ export function ResumeModernPage() {
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('wheel', handleWheel, { passive: true })
+    window.addEventListener('wheel', handleWheel, { passive: false })
     window.addEventListener('touchstart', handleTouchStart, { passive: true })
-    window.addEventListener('touchmove', handleTouchMove, { passive: true })
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
     window.addEventListener('touchend', handleTouchEnd, { passive: true })
     window.addEventListener('resize', handleResize)
 
@@ -175,7 +218,7 @@ export function ResumeModernPage() {
       window.removeEventListener('touchend', handleTouchEnd)
       window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  }, [detail])
 
   if (vm.isLoading) return <LoadingSpinner />
 
@@ -191,7 +234,7 @@ export function ResumeModernPage() {
   return (
     <div className="theme-modern-bg relative">
       <AnimatePresence>
-        {showResumePaper && (
+        {showResumePaper && !detail && (
           <div className="pointer-events-none fixed right-5 top-5 z-30 flex flex-col items-end gap-2">
             <motion.button
               initial={{ opacity: 0, scale: 0.7, y: -8 }}
@@ -220,30 +263,38 @@ export function ResumeModernPage() {
           </div>
         )}
       </AnimatePresence>
-      <button
-        type="button"
-        onClick={() => setIsTrackMuted((value) => !value)}
-        aria-label={isTrackMuted ? 'Turn on background music' : 'Turn off background music'}
-        title={isTrackMuted ? 'Music off' : 'Music on'}
-        className="theme-control-shell pointer-events-auto fixed left-5 top-5 z-30 flex items-center gap-0 rounded-full p-2 transition md:gap-3 md:px-3 md:py-2"
-      >
-        <span className="theme-control-icon flex h-9 w-9 items-center justify-center rounded-full">
-          {isTrackMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
-        </span>
-        <span className="theme-control-text hidden text-xs font-semibold tracking-[0.18em] md:inline">
-          {isTrackMuted ? 'MUSIC OFF' : 'MUSIC ON'}
-        </span>
-      </button>
+      {!detail && (
+        <button
+          type="button"
+          onClick={() => {
+            setIsTrackMuted((value) => {
+              const nextMuted = !value
+              if (!nextMuted) setHasActivatedMusic(true)
+              return nextMuted
+            })
+          }}
+          aria-label={isTrackMuted ? 'Turn on background music' : 'Turn off background music'}
+          title={isTrackMuted ? 'Music off' : 'Music on'}
+          className="theme-control-shell pointer-events-auto fixed left-5 top-5 z-30 flex items-center gap-0 rounded-full p-2 transition md:gap-3 md:px-3 md:py-2"
+        >
+          <span className="theme-control-icon flex h-9 w-9 items-center justify-center rounded-full">
+            {isTrackMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
+          </span>
+          <span className="theme-control-text hidden text-xs font-semibold tracking-[0.18em] md:inline">
+            {isTrackMuted ? 'MUSIC OFF' : 'MUSIC ON'}
+          </span>
+        </button>
+      )}
 
       {/* Fixed 3D + overlay layer */}
       <div className="fixed inset-0 z-0">
         <Canvas
-          shadows
+          shadows={enableShadows}
           dpr={[1, 1.6]}
           camera={{ position: [0, 26, 95], fov: 42, near: 0.1, far: 1000 }}
           gl={{ toneMappingExposure: 1.35 }}
         >
-          <WorkspaceScene profile={vm.profile} skills={skills} />
+          <WorkspaceScene profile={vm.profile} skills={skills} enableShadows={enableShadows} />
         </Canvas>
       </div>
 

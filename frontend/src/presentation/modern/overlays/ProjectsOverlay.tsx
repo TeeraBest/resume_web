@@ -16,7 +16,7 @@ export function ProjectsOverlay({ projects }: { projects: Project[] }) {
       <h2 className="theme-kicker mb-6 text-center text-2xl font-extrabold uppercase tracking-[0.18em] md:text-3xl">
         Projects
       </h2>
-      <div className="grid max-h-[62vh] grid-cols-1 gap-4 overflow-y-auto pr-1 sm:grid-cols-2">
+      <div data-native-scroll="true" className="grid max-h-[62vh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain pr-1 sm:grid-cols-2">
         {projects.map((project, i) => (
           <motion.button
             key={project.id}

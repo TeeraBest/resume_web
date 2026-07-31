@@ -20,9 +20,10 @@ import { getThemeFromDom, SCENE_THEME_PALETTES, THEME_ATTRIBUTE } from '../theme
 interface WorkspaceSceneProps {
   profile: Profile | null
   skills: Skill[]
+  enableShadows?: boolean
 }
 
-export function WorkspaceScene({ profile, skills }: WorkspaceSceneProps) {
+export function WorkspaceScene({ profile, skills, enableShadows = true }: WorkspaceSceneProps) {
   const [themeName, setThemeName] = useState(() => getThemeFromDom())
 
   useEffect(() => {
@@ -50,9 +51,9 @@ export function WorkspaceScene({ profile, skills }: WorkspaceSceneProps) {
         position={[30, 50, 20]}
         intensity={sceneColors.directionalIntensity}
         color={sceneColors.directional}
-        castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
+        castShadow={enableShadows}
+        shadow-mapSize-width={512}
+        shadow-mapSize-height={512}
       />
       <pointLight position={[-20, 20, 20]} intensity={sceneColors.pointBlueIntensity} color={sceneColors.pointBlue} distance={90} />
       <pointLight position={[15, 12, 25]} intensity={sceneColors.pointWarmIntensity} color={sceneColors.pointWarm} distance={70} />

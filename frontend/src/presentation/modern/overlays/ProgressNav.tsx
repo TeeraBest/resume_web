@@ -1,5 +1,6 @@
 import { useNarrativeStore, type StageId } from '../state/narrativeStore'
 import { useScrollToStage } from '../hooks/useScrollToStage'
+import { getStageRange } from '../state/stageConfig'
 
 const NAV_ITEMS: Array<{ key: string; target: StageId }> = [
   { key: 'home', target: 'home' },
@@ -13,15 +14,36 @@ const NAV_ITEMS: Array<{ key: string; target: StageId }> = [
 
 export function ProgressNav() {
   const stage = useNarrativeStore((s) => s.stage)
+  const progress = useNarrativeStore((s) => s.progress)
+  const detail = useNarrativeStore((s) => s.detail)
   const scrollToStage = useScrollToStage()
   const activeIndex = NAV_ITEMS.findIndex((item) => stage === item.target || stage === `post-${item.target}`)
   const currentIndex = activeIndex >= 0 ? activeIndex : 0
 
   const goToRelativeStage = (delta: number) => {
     const total = NAV_ITEMS.length
+
+    if (activeIndex < 0) {
+      scrollToStage('home')
+      return
+    }
+
+    if (delta < 0) {
+      const currentStage = NAV_ITEMS[currentIndex].target
+      const [start] = getStageRange(currentStage)
+      const isAtStageStart = progress <= start + 0.005
+
+      if (!isAtStageStart) {
+        scrollToStage(currentStage)
+        return
+      }
+    }
+
     const nextIndex = (currentIndex + delta + total) % total
     scrollToStage(NAV_ITEMS[nextIndex].target)
   }
+
+  if (detail) return null
 
   return (
     <div className="theme-control-shell pointer-events-auto fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-5 rounded-full px-4 py-2.5 shadow-[0_10px_38px_rgba(0,0,0,0.24)]">

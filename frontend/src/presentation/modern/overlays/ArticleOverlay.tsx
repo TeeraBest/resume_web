@@ -12,7 +12,8 @@ export function ArticleOverlay({ article }: { article: Article | undefined }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="theme-glass pointer-events-auto max-h-[70vh] w-full max-w-2xl overflow-y-auto rounded-2xl p-8"
+      data-native-scroll="true"
+      className="theme-glass pointer-events-auto max-h-[70vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-2xl p-8"
     >
       <button onClick={closeDetail} className="theme-text-faint mb-4 text-xs hover:text-white/80">
         ← Back to articles
