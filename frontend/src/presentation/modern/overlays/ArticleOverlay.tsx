@@ -12,14 +12,15 @@ export function ArticleOverlay({ article }: { article: Article | undefined }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="pointer-events-auto max-h-[70vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-md"
+      data-native-scroll="true"
+      className="theme-glass pointer-events-auto max-h-[70vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-2xl p-8"
     >
-      <button onClick={closeDetail} className="mb-4 text-xs text-white/50 hover:text-white/80">
+      <button onClick={closeDetail} className="theme-text-faint mb-4 text-xs hover:text-white/80">
         ← Back to articles
       </button>
-      <h2 className="text-2xl font-semibold text-white">{article.title}</h2>
-      <p className="mt-1 text-xs text-white/40">{article.publishedAt}</p>
-      <p className="mt-5 text-sm leading-relaxed text-white/70">{article.content}</p>
+      <h2 className="theme-text-strong text-2xl font-semibold">{article.title}</h2>
+      <p className="theme-text-faint mt-1 text-xs">{article.publishedAt}</p>
+      <p className="theme-text-muted mt-5 text-sm leading-relaxed">{article.content}</p>
     </motion.div>
   )
 }

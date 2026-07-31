@@ -27,7 +27,7 @@ export function StageOverlay({ profile, experiences, projects, skills, articles 
   const activeSkillId = useNarrativeStore((s) => s.activeSkillId)
   const activeArticleSlug = useNarrativeStore((s) => s.activeArticleSlug)
   const isPostStage = stage.startsWith('post-')
-  const showHomeOverlay = !isPostStage && (stage === 'laptopOpen' || stage === 'enterLaptop')
+  const showHomeOverlay = !isPostStage && (stage === 'enterLaptop' || stage === 'home')
 
   useEffect(() => {
     if (detail !== 'projectDetail' && detail !== 'skillDetail') return

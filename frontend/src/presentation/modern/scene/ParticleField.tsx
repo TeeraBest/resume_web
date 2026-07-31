@@ -6,7 +6,17 @@ import * as THREE from 'three'
  * Very subtle floating dust/ambient particles for the space environment.
  * Deliberately sparse and slow — "no excessive particles" per brief.
  */
-export function ParticleField({ count = 220, radius = 90 }: { count?: number; radius?: number }) {
+export function ParticleField({
+  count = 220,
+  radius = 90,
+  color = '#6fb7ff',
+  opacity = 0.35,
+}: {
+  count?: number
+  radius?: number
+  color?: string
+  opacity?: number
+}) {
   const pointsRef = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
@@ -30,11 +40,11 @@ export function ParticleField({ count = 220, radius = 90 }: { count?: number; ra
         <bufferAttribute attach="attributes-position" args={[positions, 3]} count={count} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
-        color={0x6fb7ff}
+        color={color}
         size={0.22}
         sizeAttenuation
         transparent
-        opacity={0.35}
+        opacity={opacity}
         depthWrite={false}
       />
     </points>

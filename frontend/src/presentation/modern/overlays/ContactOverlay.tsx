@@ -13,7 +13,9 @@ export function ContactOverlay({ profile }: { profile: Profile | null }) {
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       className="pointer-events-auto w-full max-w-md px-6"
     >
-      <p className="mb-6 text-center text-xs uppercase tracking-[0.3em] text-cyan-300/70">Contact</p>
+      <h2 className="theme-kicker mb-6 text-center text-2xl font-extrabold uppercase tracking-[0.18em] md:text-3xl">
+        Contact
+      </h2>
 
       <AnimatePresence mode="wait">
         {!showForm ? (
@@ -26,7 +28,7 @@ export function ContactOverlay({ profile }: { profile: Profile | null }) {
           >
             <button
               onClick={() => setShowForm(true)}
-              className="block w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-left text-sm text-white/80 backdrop-blur-md transition hover:border-cyan-400/50"
+              className="theme-glass theme-text-strong block w-full rounded-xl px-5 py-3 text-left text-base font-medium transition hover:border-[rgb(var(--master-primary)/0.5)]"
             >
               ✉️ {profile?.email ?? 'Email'}
             </button>
@@ -35,7 +37,7 @@ export function ContactOverlay({ profile }: { profile: Profile | null }) {
                 href={profile.links.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="block w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white/80 backdrop-blur-md transition hover:border-cyan-400/50"
+                className="theme-glass theme-text-strong block w-full rounded-xl px-5 py-3 text-base font-medium transition hover:border-[rgb(var(--master-primary)/0.5)]"
               >
                 🔗 LinkedIn
               </a>
@@ -45,7 +47,7 @@ export function ContactOverlay({ profile }: { profile: Profile | null }) {
                 href={profile.links.github}
                 target="_blank"
                 rel="noreferrer"
-                className="block w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white/80 backdrop-blur-md transition hover:border-cyan-400/50"
+                className="theme-glass theme-text-strong block w-full rounded-xl px-5 py-3 text-base font-medium transition hover:border-[rgb(var(--master-primary)/0.5)]"
               >
                 🐙 GitHub
               </a>
@@ -55,7 +57,7 @@ export function ContactOverlay({ profile }: { profile: Profile | null }) {
                 href={profile.resumeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="block w-full rounded-xl bg-cyan-500/90 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-cyan-400"
+                className="theme-action block w-full rounded-xl px-5 py-3 text-center text-sm font-medium transition"
               >
                 Download Résumé
               </a>
@@ -71,29 +73,33 @@ export function ContactOverlay({ profile }: { profile: Profile | null }) {
               e.preventDefault()
               window.location.href = `mailto:${profile?.email ?? ''}`
             }}
-            className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md"
+            className="theme-glass space-y-3 rounded-2xl p-5"
           >
-            <button type="button" onClick={() => setShowForm(false)} className="text-xs text-white/50 hover:text-white/80">
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="theme-text-faint text-xs hover:text-[rgb(var(--master-text-on-dark)/0.88)]"
+            >
               ← Back
             </button>
             <input
               required
               placeholder="Your name"
-              className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-cyan-400/60 focus:outline-none"
+              className="theme-input w-full rounded-lg px-3 py-2 text-sm"
             />
             <input
               required
               type="email"
               placeholder="Your email"
-              className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-cyan-400/60 focus:outline-none"
+              className="theme-input w-full rounded-lg px-3 py-2 text-sm"
             />
             <textarea
               required
               placeholder="Message"
               rows={4}
-              className="w-full resize-none rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-cyan-400/60 focus:outline-none"
+              className="theme-input w-full resize-none rounded-lg px-3 py-2 text-sm"
             />
-            <button type="submit" className="w-full rounded-lg bg-cyan-500/90 py-2.5 text-sm font-medium text-black hover:bg-cyan-400">
+            <button type="submit" className="theme-action w-full rounded-lg py-2.5 text-sm font-medium">
               Send
             </button>
           </motion.form>

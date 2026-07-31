@@ -11,6 +11,7 @@ export const STAGES = [
   'laptopOpen',
   'enterLaptop',
   'home',
+  'post-home',
   'experience',
   'post-experience',
   'projects',
