@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/resume-backend:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER_LOWER}/resume-backend:latest
     environment:
       NODE_ENV: production
       PORT: 3001
@@ -53,7 +53,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/resume-frontend:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER_LOWER}/resume-frontend:latest
     ports:
       - "80:80"
     environment:

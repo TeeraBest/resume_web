@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
+      - name: Normalize image owner
+        run: echo "IMAGE_OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
       - uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -29,8 +31,8 @@ jobs:
           target: production
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/resume-backend:latest
-            ghcr.io/${{ github.repository_owner }}/resume-backend:${{ github.sha }}
+            ghcr.io/${{ env.IMAGE_OWNER_LC }}/resume-backend:latest
+            ghcr.io/${{ env.IMAGE_OWNER_LC }}/resume-backend:${{ github.sha }}
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
@@ -41,5 +43,5 @@ jobs:
           build-args: |
             VITE_API_BASE_URL=http://localhost:8000/api/v1
           tags: |
-            ghcr.io/${{ github.repository_owner }}/resume-frontend:latest
-            ghcr.io/${{ github.repository_owner }}/resume-frontend:${{ github.sha }}
+            ghcr.io/${{ env.IMAGE_OWNER_LC }}/resume-frontend:latest
+            ghcr.io/${{ env.IMAGE_OWNER_LC }}/resume-frontend:${{ github.sha }}
