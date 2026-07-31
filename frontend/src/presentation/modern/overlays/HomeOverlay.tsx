@@ -11,10 +11,10 @@ export function HomeOverlay({ profile }: { profile: Profile | null }) {
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className="pointer-events-auto max-w-xl px-8 text-center"
     >
-      <p className="mb-3 text-xs uppercase tracking-[0.3em] text-cyan-300/70">Welcome</p>
-      <h1 className="text-4xl md:text-5xl font-semibold text-white">{profile?.fullName ?? 'Loading...'}</h1>
-      <p className="mt-3 text-lg text-white/60">{profile?.title}</p>
-      <p className="mt-6 text-sm leading-relaxed text-white/50">{profile?.summary}</p>
+      <h2 className="theme-kicker mb-4 text-2xl font-extrabold uppercase tracking-[0.18em] md:text-3xl">Welcome</h2>
+      <h1 className="theme-text-strong text-4xl font-semibold md:text-5xl">I'm {profile?.fullName ?? 'Loading...'}</h1>
+      <p className="theme-text-muted mt-3 text-lg">{profile?.title}</p>
+      <p className="theme-text-faint mt-6 text-sm leading-relaxed">{profile?.summary}</p>
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
       </div>

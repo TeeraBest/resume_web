@@ -11,6 +11,7 @@ import { useNarrativeStore, STAGES } from './state/narrativeStore'
 import { getStageForProgress } from './state/stageConfig'
 import { useMockResumeViewModel } from './data/useMockResumeViewModel'
 import { useYoutubeBackgroundTrack } from './hooks/useYoutubeBackgroundTrack.ts'
+import { getThemeFromDom, THEMES } from './theme/theme.config'
 
 const SCROLL_VH_PER_STAGE = 110
 
@@ -22,18 +23,26 @@ export function ResumeModernPage() {
   const touchStartYRef = useRef<number | null>(null)
   const touchPrevYRef = useRef<number | null>(null)
   const navigate = useNavigate()
+  const detail = useNarrativeStore((s) => s.detail)
   const [showResumePaper, setShowResumePaper] = useState(false)
   const [showResumePaperDialog, setShowResumePaperDialog] = useState(false)
   const [resumePaperMessage, setResumePaperMessage] = useState('')
   const skills = vm.allSkills
   const [isTrackMuted, setIsTrackMuted] = useState(true)
+  const [hasActivatedMusic, setHasActivatedMusic] = useState(false)
   const youtubeMusicVideoId = import.meta.env.VITE_YOUTUBE_MUSIC_VIDEO_ID?.trim() || '8b3fqIBrNW0'
   const youtubeStartPercent = useMemo(() => 0.02 + Math.random() * 0.78, [])
+  const enableShadows = useMemo(() => {
+    if (typeof window === 'undefined') return true
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+    const isSmallViewport = window.innerWidth < 900
+    return !(isCoarsePointer || isSmallViewport)
+  }, [])
 
   // Local procedural track stays as fallback while YouTube player is wired in.
   // useResumeBackgroundTrack(musicSeed, { enabled: true, muted: isTrackMuted })
   useYoutubeBackgroundTrack({
-    enabled: Boolean(youtubeMusicVideoId),
+    enabled: Boolean(youtubeMusicVideoId) && hasActivatedMusic,
     muted: isTrackMuted,
     videoId: youtubeMusicVideoId ?? '',
     volume: 15,
@@ -41,11 +50,14 @@ export function ResumeModernPage() {
   })
   
 
-  const resumePaperMessages = [
-    'I have the paper version as well. No worryyy',
-    // 'Paper version is here.',
-    // 'Love it right? , you can also see my details here too',
-  ]
+  const resumePaperMessages =
+    getThemeFromDom() === THEMES.MY_LOVE_ENG
+      ? ['I Love you so much. Please forgive me 🥰']
+      : [
+          'I have the paper version as well. No worryyy',
+          // 'Paper version is here.',
+          // 'Love it right? , you can also see my details here too',
+        ]
 
   useEffect(() => {
     const showButtonTimer = window.setTimeout(() => {
@@ -69,6 +81,25 @@ export function ResumeModernPage() {
   }, [])
 
   useEffect(() => {
+    const getNativeScrollContainer = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return null
+      return target.closest('[data-native-scroll="true"]') as HTMLElement | null
+    }
+
+    const canNativeScroll = (container: HTMLElement, delta: number) => {
+      if (delta === 0) return false
+
+      const maxScrollTop = container.scrollHeight - container.clientHeight
+      if (maxScrollTop <= 0) return false
+
+      const epsilon = 1
+      if (delta > 0) {
+        return container.scrollTop < maxScrollTop - epsilon
+      }
+
+      return container.scrollTop > epsilon
+    }
+
     const syncNarrativeProgress = (offset: number, maxScrollDistance: number) => {
       const progress = maxScrollDistance > 0 ? Math.min(1, Math.max(0, offset / maxScrollDistance)) : 0
 
@@ -88,6 +119,14 @@ export function ResumeModernPage() {
     }
 
     const handleWheel = (event: WheelEvent) => {
+      const nativeScrollContainer = getNativeScrollContainer(event.target)
+      if (nativeScrollContainer && canNativeScroll(nativeScrollContainer, event.deltaY)) return
+
+      if (detail === 'projectDetail') {
+        event.preventDefault()
+        return
+      }
+
       const maxScrollDistance = maxScrollDistanceRef.current
       if (maxScrollDistance <= 0) return
 
@@ -120,9 +159,17 @@ export function ResumeModernPage() {
       const delta = prev - y
       touchPrevYRef.current = y
 
+      const nativeScrollContainer = getNativeScrollContainer(event.target)
+      if (nativeScrollContainer && canNativeScroll(nativeScrollContainer, delta)) return
+
+      if (detail === 'projectDetail') {
+        if (event.cancelable) event.preventDefault()
+        return
+      }
+
       // delta > 0 means user moved finger up => advance forward
       if (delta > 0) {
-        event.preventDefault()
+        if (event.cancelable) event.preventDefault()
         const nextOffset = scrollOffsetRef.current + Math.max(7.5, Math.abs(delta) * 0.8)
         scrollOffsetRef.current = nextOffset >= maxScrollDistance ? nextOffset % maxScrollDistance : nextOffset
         window.scrollTo(0, scrollOffsetRef.current)
@@ -159,9 +206,9 @@ export function ResumeModernPage() {
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('wheel', handleWheel, { passive: true })
+    window.addEventListener('wheel', handleWheel, { passive: false })
     window.addEventListener('touchstart', handleTouchStart, { passive: true })
-    window.addEventListener('touchmove', handleTouchMove, { passive: true })
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
     window.addEventListener('touchend', handleTouchEnd, { passive: true })
     window.addEventListener('resize', handleResize)
 
@@ -175,7 +222,7 @@ export function ResumeModernPage() {
       window.removeEventListener('touchend', handleTouchEnd)
       window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  }, [detail])
 
   if (vm.isLoading) return <LoadingSpinner />
 
@@ -189,9 +236,9 @@ export function ResumeModernPage() {
   }
 
   return (
-    <div className="relative bg-[#02040a]">
+    <div className="theme-modern-bg relative">
       <AnimatePresence>
-        {showResumePaper && (
+        {showResumePaper && !detail && (
           <div className="pointer-events-none fixed right-5 top-5 z-30 flex flex-col items-end gap-2">
             <motion.button
               initial={{ opacity: 0, scale: 0.7, y: -8 }}
@@ -199,7 +246,7 @@ export function ResumeModernPage() {
               exit={{ opacity: 0, scale: 0.85, y: -6 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               onClick={() => navigate('/resume')}
-              className="pointer-events-auto rounded-full border border-cyan-300/35 bg-slate-950/92 px-4 py-2 text-sm font-semibold text-cyan-100 shadow-[0_0_28px_rgba(79,214,255,0.18)] backdrop-blur-md hover:border-cyan-200/55 hover:bg-slate-900"
+              className="theme-primary-pill pointer-events-auto rounded-full px-4 py-2 text-sm font-semibold transition hover:border-[rgb(var(--master-primary)/0.55)] hover:bg-[rgb(var(--master-secondary))]"
             >
               Résumé Paper
             </motion.button>
@@ -210,40 +257,48 @@ export function ResumeModernPage() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.94 }}
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                className="relative mt-1 max-w-[18rem] rounded-[2rem] border border-amber-300/70 bg-amber-50/95 px-5 py-4 text-left text-sm text-slate-900 shadow-[0_14px_34px_rgba(245,158,11,0.25)] backdrop-blur-md"
+                className="theme-note relative mt-1 max-w-[18rem] rounded-[2rem] px-5 py-4 text-left text-sm backdrop-blur-md"
               >
-                <div className="absolute -top-2 right-7 h-4 w-4 rotate-45 border-l border-t border-amber-300/70 bg-amber-50/95" />
-                <p className="text-[10px] uppercase tracking-[0.34em] text-amber-700/90">Résumé Paper</p>
+                <div className="absolute -top-2 right-7 h-4 w-4 rotate-45 border-l border-t border-[rgb(var(--master-accent)/0.65)] bg-[rgb(255_251_235/0.95)]" />
+                <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--master-accent)/0.92)]">Résumé Paper</p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-slate-800">{resumePaperMessage}</p>
               </motion.div>
             )}
           </div>
         )}
       </AnimatePresence>
-      <button
-        type="button"
-        onClick={() => setIsTrackMuted((value) => !value)}
-        aria-label={isTrackMuted ? 'Turn on background music' : 'Turn off background music'}
-        title={isTrackMuted ? 'Music off' : 'Music on'}
-        className="pointer-events-auto fixed bottom-5 left-5 z-30 flex items-center gap-3 rounded-full border border-white/15 bg-black/20 px-3 py-2 text-white/90 backdrop-blur-md transition hover:border-white/30 hover:bg-black/35"
-      >
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8">
-          {isTrackMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
-        </span>
-        <span className="text-xs font-medium tracking-[0.18em] text-white/75">
-          {isTrackMuted ? 'MUSIC OFF' : 'MUSIC ON'}
-        </span>
-      </button>
+      {!detail && (
+        <button
+          type="button"
+          onClick={() => {
+            setIsTrackMuted((value) => {
+              const nextMuted = !value
+              if (!nextMuted) setHasActivatedMusic(true)
+              return nextMuted
+            })
+          }}
+          aria-label={isTrackMuted ? 'Turn on background music' : 'Turn off background music'}
+          title={isTrackMuted ? 'Music off' : 'Music on'}
+          className="theme-control-shell pointer-events-auto fixed left-5 top-5 z-30 flex items-center gap-0 rounded-full p-2 transition md:gap-3 md:px-3 md:py-2"
+        >
+          <span className="theme-control-icon flex h-9 w-9 items-center justify-center rounded-full">
+            {isTrackMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
+          </span>
+          <span className="theme-control-text hidden text-xs font-semibold tracking-[0.18em] md:inline">
+            {isTrackMuted ? 'MUSIC OFF' : 'MUSIC ON'}
+          </span>
+        </button>
+      )}
 
       {/* Fixed 3D + overlay layer */}
       <div className="fixed inset-0 z-0">
         <Canvas
-          shadows
+          shadows={enableShadows}
           dpr={[1, 1.6]}
           camera={{ position: [0, 26, 95], fov: 42, near: 0.1, far: 1000 }}
           gl={{ toneMappingExposure: 1.35 }}
         >
-          <WorkspaceScene profile={vm.profile} skills={skills} />
+          <WorkspaceScene profile={vm.profile} skills={skills} enableShadows={enableShadows} />
         </Canvas>
       </div>
 

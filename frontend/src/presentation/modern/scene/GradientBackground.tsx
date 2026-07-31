@@ -6,13 +6,19 @@ import * as THREE from 'three'
  * flat background color so the scene reads as a soft dark-navy space rather
  * than pure black.
  */
-export function GradientBackground() {
+export function GradientBackground({
+  topColor = '#3d5a8a',
+  bottomColor = '#161c30',
+}: {
+  topColor?: string
+  bottomColor?: string
+}) {
   const uniforms = useMemo(
     () => ({
-      topColor: { value: new THREE.Color('#3d5a8a') },
-      bottomColor: { value: new THREE.Color('#161c30') },
+      topColor: { value: new THREE.Color(topColor) },
+      bottomColor: { value: new THREE.Color(bottomColor) },
     }),
-    [],
+    [topColor, bottomColor],
   )
 
   return (
