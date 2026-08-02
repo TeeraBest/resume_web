@@ -61,7 +61,7 @@ export function ResumeModernPage() {
     getThemeFromDom() === THEMES.MY_LOVE_ENG
       ? ['I Love you so much. Please forgive me 🥰']
       : [
-          'I have the paper version as well. No worryyy',
+          'I have the paper version as well. No worries.',
           // 'Paper version is here.',
           // 'Love it right? , you can also see my details here too',
         ]
@@ -278,7 +278,7 @@ export function ResumeModernPage() {
               onClick={() => navigate('/resume')}
               className="theme-primary-pill pointer-events-auto rounded-full px-4 py-2 text-sm font-semibold transition hover:border-[rgb(var(--master-primary)/0.55)] hover:bg-[rgb(var(--master-secondary))]"
             >
-              Résumé Paper
+              Paper Résumé
             </motion.button>
 
             {showResumePaperDialog && (
@@ -290,7 +290,7 @@ export function ResumeModernPage() {
                 className="theme-note relative mt-1 max-w-[18rem] rounded-[2rem] px-5 py-4 text-left text-sm backdrop-blur-md"
               >
                 <div className="absolute -top-2 right-7 h-4 w-4 rotate-45 border-l border-t border-[rgb(var(--master-accent)/0.65)] bg-[rgb(255_251_235/0.95)]" />
-                <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--master-accent)/0.92)]">Résumé Paper</p>
+                <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--master-accent)/0.92)]">Paper Résumé</p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-slate-800">{resumePaperMessage}</p>
               </motion.div>
             )}
@@ -349,7 +349,7 @@ export function ResumeModernPage() {
 
 function VolumeOnIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 10v4h4l5 4V6l-5 4H5Z" />
       <path d="M18 9a5 5 0 0 1 0 6" />
       <path d="M20.5 6.5a8.5 8.5 0 0 1 0 11" />
@@ -359,7 +359,7 @@ function VolumeOnIcon() {
 
 function VolumeOffIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 10v4h4l5 4V6l-5 4H5Z" />
       <path d="m18 9 4 6" />
       <path d="m22 9-4 6" />
